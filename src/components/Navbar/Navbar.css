@@ -1,0 +1,15 @@
+nav {
+    background-color: black;
+}
+
+nav a {
+    margin: 16px;
+}
+
+nav a.active {
+    color: crimson;
+}
+
+nav a.active:focus {
+    outline: none;
+}

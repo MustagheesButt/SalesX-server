@@ -1,0 +1,17 @@
+main#dashboard {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+}
+
+aside {
+    grid-column: span 3;
+}
+
+div#main {
+    grid-column: span 9;
+}
+
+.form-group > label {
+    display: block;
+    margin: 5px 0;
+}
