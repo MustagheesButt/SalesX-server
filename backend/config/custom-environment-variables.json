@@ -1,5 +1,6 @@
 {
     "database": {
         "password": "SALESX_DB_PASSWORD"
-    }
+    },
+    "jwtPrivateKey": "SALESX_JWT_KEY"
 }

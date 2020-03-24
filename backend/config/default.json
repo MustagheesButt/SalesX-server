@@ -4,5 +4,7 @@
     "database": {
         "connection_string": "mongodb://localhost/salesx",
         "username": "root"
-    }
+    },
+
+    "jwtPrivateKey": ""
 }

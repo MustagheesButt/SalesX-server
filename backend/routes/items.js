@@ -1,23 +1,20 @@
-const config = require('config')
 const express = require('express')
+const _ = require('lodash')
+
 const { Item, validateItem } = require('../models/item')
+const auth = require('../middleware/auth')
+
 const router = express.Router()
 
-const CONN_STRING = config.get('database.connection_string')
-mongoose.connect(CONN_STRING, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => {
-        console.log('Connected to MongoDB...')
-    })
-    .catch((err) => {
-        console.log('Could not connect to MongoDB.', err)
-    })
+// TODO: Make sure only the authenticated user's items are returned.
+// Currently, it's returning all items.
 
-router.get('/', async (req, res) => {
+router.get('/', auth, async (req, res) => {
     const items = await Item.find().sort('name')
     res.send(items)
 })
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', auth, async (req, res) => {
     const item = await Item.findById(req.params.id)
     if (!item)
         return res.status(404).send(`Could not find item with id: ${req.params.id}`)
@@ -25,33 +22,23 @@ router.get('/:id', async (req, res) => {
     res.send(item)
 })
 
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
     const { error } = validateItem(req.body)
     if (error)
         return res.status(400).send(error.details[0].message)
 
-    const item = new Item({
-        name: req.body.name,
-        description: req.body.description,
-        barcode: req.body.barcode,
-        price: req.body.price
-    })
+    const item = new Item(_.pick(req.body, ['name', 'description', 'barcode', 'price']))
 
     const result = await item.save()
     res.send(result)
 })
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', auth, async (req, res) => {
     const { error } = validateItem(req.body)
     if (error)
         return res.status(400).send(error.details[0].message)
 
-    const item = await Item.findByIdAndUpdate(req.params.id, {
-        name: req.body.name,
-        description: req.body.description,
-        barcode: req.body.barcode,
-        price: req.body.price
-    })
+    const item = await Item.findByIdAndUpdate(req.params.id, _.pick(req.body, ['name', 'description', 'barcode', 'price']))
 
     if (!item)
         return res.status(404).send(`Could not find item with id: ${req.params.id}`)
@@ -59,7 +46,7 @@ router.put('/:id', async (req, res) => {
     res.send(item)
 })
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
     const item = await Item.findByIdAndDelete(req.params.id)
     
     if (!item)
