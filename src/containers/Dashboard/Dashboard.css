@@ -11,7 +11,18 @@ div#main {
     grid-column: span 9;
 }
 
-.form-group > label {
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+ul > li > a {
+    padding: 15px 0 15px 15px;
+    background-color: crimson;
+    transition: 0.5s;
     display: block;
-    margin: 5px 0;
+}
+
+ul > li > a:hover {
+    background-color: white;
 }

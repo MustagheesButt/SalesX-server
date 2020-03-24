@@ -1,5 +1,6 @@
 const helmet = require('helmet')
 const config = require('config')
+const cors = require('cors')
 const express = require('express')
 const mongoose = require('mongoose')
 
@@ -25,6 +26,9 @@ mongoose.connect(CONN_STRING, { useNewUrlParser: true, useUnifiedTopology: true 
 
 app.use(express.json())
 app.use(helmet())
+app.use(cors({
+    origin: '*'
+}))
 
 app.use('/api/users', users)
 app.use('/api/items', items)
@@ -34,7 +38,7 @@ app.get('/', (req, res) => {
     res.send('Hello World')
 })
 
-const PORT = process.env.PORT || 3000
+const PORT = config.get('expressPort')
 
 app.listen(PORT, () => {
     console.log(`Listening on ${PORT}...`)

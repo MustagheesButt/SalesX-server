@@ -2,16 +2,18 @@ body {
     color: #ffffff;
 }
 
-section.card {
-    margin: 15px;
-    padding: 15px;
+a {
+    color: #ffffff;
+    text-decoration: none;
+    transition: 0.5s;
 }
 
-.grid-container {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    grid-template-rows: 50px 1fr 50px;
-    min-height: 100vh;
+a:hover {
+    color: crimson;
+}
+
+h1, h2, h3 {
+    color: #ffffff;
 }
 
 header, main, footer {
@@ -26,15 +28,23 @@ footer > div {
     margin: 15px;
 }
 
+section.card {
+    margin: 15px;
+    padding: 20px;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: 50px 1fr 50px;
+    min-height: 100vh;
+}
+
 .flex-container {
     display: flex;
 }
 .flex-container.flex-end {
     justify-content: right;
-}
-
-h1, h2, h3 {
-    color: #ffffff;
 }
 
 .depth-1 {
@@ -49,12 +59,19 @@ h1, h2, h3 {
     background-color: #2f2e2e;
 }
 
-a {
-    color: #ffffff;
-    text-decoration: none;
-    transition: 0.5s;
+.form-group {
+    margin-bottom: 20px;
 }
 
-a:hover {
-    color: crimson;
+.form-group > label {
+    display: block;
+    margin: 5px 0;
+}
+
+.alert {
+    margin: 5px 0;
+}
+
+.alert-danger {
+    color: rgb(220, 55, 85);
 }

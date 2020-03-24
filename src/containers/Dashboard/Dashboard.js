@@ -9,9 +9,10 @@ class Dashboard extends React.Component {
             <main className='depth-1' id='dashboard'>
                 <aside className='depth-2'>
                     <ul>
+                        <li><Link to='/dashboard'>Dashboard</Link></li>
                         <li><Link to='/dashboard/shops'>Shops</Link></li>
                         <li><Link to='/dashboard/items'>Items</Link></li>
-                        <li>Inventory</li>
+                        <li><Link to='/dashboard/inventory'>Inventory</Link></li>
                         <li><Link to='/dashboard/employees'>Employees</Link></li>
                     </ul>
                 </aside>

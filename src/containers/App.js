@@ -16,7 +16,7 @@ function App() {
         <div className='grid-container'>
             <BrowserRouter>
                 <header>
-                    <Navbar user={1} />
+                    <Navbar user={0} />
                 </header>
 
                 <Route path='/' exact component={Home} />

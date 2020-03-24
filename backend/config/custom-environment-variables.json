@@ -1,4 +1,5 @@
 {
+    "expressPort": "SALESX_EXPRESS_PORT",
     "database": {
         "password": "SALESX_DB_PASSWORD"
     },
