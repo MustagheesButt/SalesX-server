@@ -1,5 +1,5 @@
 import React from 'react'
-import { Route, Link } from 'react-router-dom'
+import { Route, NavLink } from 'react-router-dom'
 
 import './Dashboard.css'
 
@@ -9,11 +9,17 @@ class Dashboard extends React.Component {
             <main className='depth-1' id='dashboard'>
                 <aside className='depth-2'>
                     <ul>
-                        <li><Link to='/dashboard'>Dashboard</Link></li>
-                        <li><Link to='/dashboard/shops'>Shops</Link></li>
-                        <li><Link to='/dashboard/items'>Items</Link></li>
-                        <li><Link to='/dashboard/inventory'>Inventory</Link></li>
-                        <li><Link to='/dashboard/employees'>Employees</Link></li>
+                        <li><NavLink to='/dashboard' exact>Dashboard</NavLink></li>
+                        <li><NavLink to='/dashboard/shops'>Shops</NavLink></li>
+                        <li><NavLink to='/dashboard/items'>Items</NavLink>
+                            <ul>
+                                <li><NavLink to='/dashboard/items/new-item'>Add New Item</NavLink></li>
+                                <li><NavLink to='/dashboard/items/list-items'>List Items</NavLink></li>
+                                <li><NavLink to='/dashboard/items/update-item'>Update Items</NavLink></li>
+                            </ul>
+                        </li>
+                        <li><NavLink to='/dashboard/inventory'>Inventory</NavLink></li>
+                        <li><NavLink to='/dashboard/employees'>Employees</NavLink></li>
                     </ul>
                 </aside>
                 <div id='main'>
