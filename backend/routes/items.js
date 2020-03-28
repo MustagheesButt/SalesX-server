@@ -9,7 +9,7 @@ const router = express.Router()
 // TODO: Make sure only the authenticated user's items are returned.
 // Currently, it's returning all items.
 
-router.get('/', auth, async (req, res) => {
+router.get('/', async (req, res) => {
     const items = await Item.find().sort('name')
     res.send(items)
 })
@@ -22,7 +22,7 @@ router.get('/:id', auth, async (req, res) => {
     res.send(item)
 })
 
-router.post('/', auth, async (req, res) => {
+router.post('/', async (req, res) => {
     const { error } = validateItem(req.body)
     if (error)
         return res.status(400).send(error.details[0].message)

@@ -3,13 +3,13 @@ import React from 'react'
 import { BrowserRouter, Route } from 'react-router-dom'
 import './App.css'
 
-import Navbar from '../components/Navbar/Navbar'
+import Navbar from '../components/navbar/navbar'
 
-import Home from './Home/Home'
-import Login from './Authentication/Login'
-import Register from './Authentication/Register'
-import About from './About/About'
-import Dashboard from './Dashboard/Dashboard'
+import Home from './home/home'
+import Login from './authentication/login'
+import Register from './authentication/register'
+import About from './about/about'
+import Dashboard from './dashboard/dashboard'
 
 function App() {
     return (

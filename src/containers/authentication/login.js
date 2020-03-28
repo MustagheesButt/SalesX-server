@@ -1,7 +1,7 @@
 import React from 'react'
 
-import './Authentication.css'
-import LoginForm from '../../components/Forms/LoginForm'
+import './authentication.css'
+import LoginForm from '../../components/forms/loginForm'
 
 const Login = () => {
     return (

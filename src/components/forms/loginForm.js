@@ -3,7 +3,7 @@ import axios from 'axios'
 import Joi from '@hapi/joi'
 import { Link } from 'react-router-dom'
 
-import Form from '../../components/Common/Form'
+import Form from '../common/form'
 
 class LoginForm extends Form {
     constructor(props) {

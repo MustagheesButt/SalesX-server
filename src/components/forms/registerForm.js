@@ -2,7 +2,7 @@ import React from 'react'
 import axios from 'axios'
 import Joi from '@hapi/joi'
 
-import Form from '../../components/Common/Form'
+import Form from '../../components/common/form'
 
 class RegisterForm extends Form {
     constructor(props) {

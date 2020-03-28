@@ -1,7 +1,7 @@
 import React from 'react'
 
-import RegisterForm from '../../components/Forms/RegisterForm'
-import './Authentication.css'
+import RegisterForm from '../../components/forms/registerForm'
+import './authentication.css'
 
 class Register extends React.Component {
 

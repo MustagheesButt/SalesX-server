@@ -29,10 +29,12 @@ ul > li > a:hover {
 
 ul > li > a.active {
     background-color: crimson;
+    color: white;
 }
 
 ul > li > a + ul {
     display: none;
+    padding-left: 10px;
 }
 
 ul > li > a.active + ul {
