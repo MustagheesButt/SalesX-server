@@ -21,6 +21,7 @@ const Navbar = (props) => {
                 </div>
 
                 <div className='flex-container flex-end'>
+                    <a>{props.user.firstName} {props.user.lastName}</a>
                     <NavLink to='/settings'>Settings</NavLink>
                     <NavLink to='/profile'>Profile</NavLink>
                     <NavLink to='/logout'>Logout</NavLink>

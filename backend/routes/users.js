@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
     res.send(users.map(user => _.pick(user, ['_id', 'email', 'firstName', 'lastName'])))
 })
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', auth, async (req, res) => {
     const user = await User.findById(req.params.id)
     if (!user)
         return res.status(404).send(`Could not find user with id: ${req.params.id}`)
@@ -27,7 +27,7 @@ router.post('/', async (req, res) => {
         return res.status(400).send(error.details[0].message)
 
     if (await User.findOne({ email: req.body.email }))
-        return res.send('User already registered')
+        return res.status(400).send('User already registered.')
 
     const user = new User(_.pick(req.body, ['email', 'password', 'firstName', 'lastName']))
 
@@ -37,7 +37,10 @@ router.post('/', async (req, res) => {
     await user.save()
 
     const token = user.generateAuthToken()
-    res.header('x-auth-token', token).send(_.pick(user, ['_id', 'email', 'firstName', 'lastName']))
+    res
+        .header('x-auth-token', token)
+        .header('access-control-expose-headers', 'x-auth-token')
+        .send(_.pick(user, ['_id', 'email', 'firstName', 'lastName']))
 })
 
 // TODO: this probably needs work

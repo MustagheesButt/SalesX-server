@@ -37,7 +37,7 @@ const Brand = mongoose.model('Brand', brandSchema)
 function validateBrand(brand) {
     const schema = {
         name: Joi.string().max(255).required(),
-        businessEmail: Joi.string().email().min(8),
+        businessEmail: Joi.string().email(),
         phoneNumber: Joi.string().min(6).max(60),
         address: Joi.string().max(1000),
         description: Joi.string().max(1200)

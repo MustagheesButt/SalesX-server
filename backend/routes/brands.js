@@ -9,7 +9,7 @@ const router = express.Router()
 // TODO: Make sure only the authenticated user's brands are returned.
 // Currently, it's returning all brands.
 
-router.get('/', async (req, res) => {
+router.get('/', auth, async (req, res) => {
     const brands = await Brand.find().sort('name')
     res.send(brands)
 })
@@ -22,12 +22,12 @@ router.get('/:id', auth, async (req, res) => {
     res.send(brand)
 })
 
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
     const { error } = validateBrand(req.body)
     if (error)
         return res.status(400).send(error.details[0].message)
 
-    const brand = new Brand(_.pick(req.body, ['name', 'description', 'barcode', 'price']))
+    const brand = new Brand(_.pick(req.body, ['name', 'businessEmail', 'phoneNumber', 'address', 'description']))
 
     const result = await brand.save()
     res.send(result)
@@ -38,7 +38,7 @@ router.put('/:id', auth, async (req, res) => {
     if (error)
         return res.status(400).send(error.details[0].message)
 
-    const brand = await brand.findByIdAndUpdate(req.params.id, _.pick(req.body, ['name', 'description', 'barcode', 'price']))
+    const brand = await brand.findByIdAndUpdate(req.params.id, _.pick(req.body, ['name', 'businessEmail', 'phoneNumber', 'address', 'description']))
 
     if (!brand)
         return res.status(404).send(`Could not find brand with id: ${req.params.id}`)

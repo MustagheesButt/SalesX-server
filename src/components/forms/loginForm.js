@@ -1,7 +1,8 @@
 import React from 'react'
-import axios from 'axios'
 import Joi from '@hapi/joi'
 import { Link } from 'react-router-dom'
+
+import authService from '../../services/authService'
 
 import Form from '../common/form'
 
@@ -20,22 +21,18 @@ class LoginForm extends Form {
         })
     }
 
-    postForm() {
-        const submitBtn = document.querySelector('button[type=submit]')
-        submitBtn.innerHTML = 'Plz wait'
-
-        axios.post('http://localhost:5000/api/auth', {
-            email: this.state.formData.email,
-            password: this.state.formData.password
-        })
-            .then(response => {
-                console.log(response)
-                submitBtn.innerHTML = "Logged In!"
-            })
-            .catch(err => {
-                console.error(err.response.data)
-                submitBtn.innerHTML = "Try Again"
-            })
+    async postForm() {
+        try {
+            const { email, password } = this.state.formData
+            await authService.login(email, password)
+            window.location = '/dashboard'
+        } catch ({ response }) {
+            if (response && response.status === 400) {
+                const errors = { ...this.state.errors }
+                errors.email = response.data
+                this.setState({errors})
+            }
+        }
     }
 
     render() {

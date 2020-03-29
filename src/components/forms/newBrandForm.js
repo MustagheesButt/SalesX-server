@@ -1,7 +1,8 @@
 import React from 'react'
-import axios from 'axios'
 import Joi from '@hapi/joi'
 import { toast } from 'react-toastify'
+
+import http from '../../services/httpService'
 
 import Form from '../../components/common/form'
 
@@ -12,13 +13,13 @@ class NewShopForm extends Form {
         super(props)
 
         this.state = {
-            formData: { name: '', email: '', phoneNumber: '', address: '', description: '' },
+            formData: { name: '', businessEmail: '', phoneNumber: '', address: '', description: '' },
             errors: {}
         }
 
         this.schema = Joi.object({
             name: Joi.string().required().label('Brand Name'),
-            email: Joi.string().email({ tlds: { allow: false } }).label('Business Email'),
+            businessEmail: Joi.string().email({ tlds: { allow: false } }).label('Business Email'),
             phoneNumber: Joi.string().label('Primary Phone Number'),
             address: Joi.string().label('Address'),
             description: Joi.string().label('Description')
@@ -27,11 +28,15 @@ class NewShopForm extends Form {
 
     async postForm() {
         try {
-            const { data } = await axios.post(apiEndpoint, this.state.formData)
+            const { data } = await http.post(apiEndpoint, this.state.formData)
 
             toast(`Brand "${data.name}" created!`)
-        } catch (ex) {
-            console.error(ex.response.data)
+        } catch ({ response }) {
+            if (response.errors && response.statusCode === 400) {
+                const errors = this.state.errors
+                
+                this.setState({ errors })
+            }
         }
     }
 
@@ -40,7 +45,7 @@ class NewShopForm extends Form {
             <div>
                 <form onSubmit={this.submitHandler}>
                     {this.renderInput('name', 'Brand Name')}
-                    {this.renderInput('email', 'Business Email', 'email')}
+                    {this.renderInput('businessEmail', 'Business Email', 'email')}
                     {this.renderInput('phoneNumber', 'Primary Phone Number')}
                     {this.renderInput('address', 'Address')}
                     {this.renderInput('description', 'Description')}

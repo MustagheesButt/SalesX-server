@@ -1,8 +1,11 @@
 import React from 'react'
-import axios from 'axios'
 import Joi from '@hapi/joi'
+import { toast } from 'react-toastify'
 
 import Form from '../../components/common/form'
+
+import userService from '../../services/userService'
+import authService from '../../services/authService'
 
 class RegisterForm extends Form {
     constructor(props) {
@@ -21,22 +24,20 @@ class RegisterForm extends Form {
         })
     }
 
-    postForm() {
-        const submitBtn = document.querySelector('button[type=submit]')
-        submitBtn.innerHTML = 'Plz wait'
+    async postForm() {
+        try {
+            const response = await userService.register(this.state.formData)
+            toast.success(`${response.data.firstName} registered successfully!`)
+            authService.loginWithJwt(response.headers['x-auth-token'])
 
-        axios.post('http://localhost:5000/api/users', {
-            email: this.state.formData.email,
-            password: this.state.formData.password
-        })
-            .then(response => {
-                console.log(response)
-                submitBtn.innerHTML = "Registered!"
-            })
-            .catch(err => {
-                console.error(err.response.data)
-                submitBtn.innerHTML = "Try Again"
-            })
+            window.location = '/dashboard'
+        } catch ({ response }) {
+            if (response && response.status === 400) {
+                const errors = { ...this.state.errors }
+                errors.email = response.data
+                this.setState({ errors })
+            }
+        }
     }
 
     render() {
