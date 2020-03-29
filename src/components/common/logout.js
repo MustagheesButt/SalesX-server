@@ -4,13 +4,15 @@ import authService from '../../services/authService'
 class Logout extends React.Component {
     componentDidMount() {
         authService.logout()
-        window.location = '/'
+
+        setTimeout(function() {
+            window.location = '/'
+        }, 2000)
     }
 
     render() {
-        return (
-            <p>Logging out...</p>
-        )
+        document.write('<p>Logging out...</p>')
+        return null
     }
 }
 

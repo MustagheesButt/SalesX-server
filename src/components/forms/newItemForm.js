@@ -27,10 +27,6 @@ class NewItemForm extends Form {
         })
     }
 
-    componentDidMount() {
-        toast('NewItemForm mounted!')
-    }
-
     async postForm() {
         try {
             const { data } = await axios.post(apiEndpoint, this.state.formData)

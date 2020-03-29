@@ -25,7 +25,8 @@ class LoginForm extends Form {
         try {
             const { email, password } = this.state.formData
             await authService.login(email, password)
-            window.location = '/dashboard'
+            const { state } = this.props.location
+            window.location = state ? state.from.pathname : '/dashboard'
         } catch ({ response }) {
             if (response && response.status === 400) {
                 const errors = { ...this.state.errors }
@@ -36,6 +37,7 @@ class LoginForm extends Form {
     }
 
     render() {
+        console.log(this.props)
         return (
             <div>
                 <form onSubmit={this.submitHandler}>
