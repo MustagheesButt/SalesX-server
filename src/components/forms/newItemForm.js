@@ -6,9 +6,7 @@ import 'react-toastify/dist/ReactToastify.css'
 
 import Form from '../common/form'
 
-const apiEndpoint = 'http://localhost:5000/api/items'
-
-toast.configure()
+const apiEndpoint = '/items'
 
 class NewItemForm extends Form {
     constructor(props) {

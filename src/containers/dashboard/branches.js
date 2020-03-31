@@ -3,55 +3,55 @@ import { Route } from 'react-router-dom'
 
 import http from '../../services/httpService'
 
-import NewBrandForm from '../../components/forms/newBrandForm'
+import NewBranchForm from '../../components/forms/newBranchForm'
 
-const apiEndpoint = '/brands'
+const apiEndpoint = '/branches'
 
-const Brands = (props) => {
+const Branches = (props) => {
     return (
         <React.Fragment>
-            <Route path='/dashboard/brands' exact component={AllBrands} />
-            <Route path='/dashboard/brands/new-brand' component={NewBrand} />
+            <Route path='/dashboard/branches' exact component={AllBranches} />
+            <Route path='/dashboard/branches/new-branch' component={NewBranch} />
         </React.Fragment>
     )
 }
 
-class AllBrands extends React.Component {
+class AllBranches extends React.Component {
     constructor(props) {
         super(props)
 
         this.state = {
-            brands: []
+            branches: []
         }
     }
 
-    async populateBrands() {
+    async populateBranches() {
         try {
-            const { data: brands } = await http.get(apiEndpoint)
-            this.setState({ brands })
+            const { data: branches } = await http.get(apiEndpoint)
+            this.setState({ branches })
         } catch ({ response }) {
             console.error(response.data)
         }
     }
 
     async componentDidMount() {
-        this.populateBrands()
+        this.populateBranches()
     }
 
     render() {
-        const brandsList = this.state.brands.map(brand => {
+        const branchesList = this.state.branches.map(branch => {
             return (
-                <tr key={brand._id}>
-                    <td>{brand._id}</td><td>{brand.name}</td><td>{brand.businessEmail || 'N/A'}</td><td>{brand.phoneNumber}</td><td>{brand.address || 'N/A'}</td><td>{brand.description || 'N/A'}</td>
+                <tr key={branch._id}>
+                    <td>{branch._id}</td><td>{branch.name}</td><td>{branch.businessEmail || 'N/A'}</td><td>{branch.phoneNumber}</td><td>{branch.address || 'N/A'}</td><td>{branch.description || 'N/A'}</td>
                 </tr>
             )
         })
 
         return (
             <section className='card depth-3'>
-                <h2>Your Brands</h2>
+                <h2>Your Branches</h2>
                 <div>
-                    <p>Click on a brand to edit its details.</p>
+                    <p>Click on a branch to edit its details.</p>
                     <table style={{ width: '100%' }}>
                         <thead style={{ textAlign: 'left' }}>
                             <tr>
@@ -64,7 +64,7 @@ class AllBrands extends React.Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {brandsList}
+                            {branchesList}
                         </tbody>
                     </table>
                 </div>
@@ -73,15 +73,15 @@ class AllBrands extends React.Component {
     }
 }
 
-const NewBrand = (props) => {
+const NewBranch = (props) => {
     return (
         <section className='card depth-3'>
-            <h2>Create a New Brand</h2>
+            <h2>Create a New Branch</h2>
             <div>
-                <NewBrandForm />
+                <NewBranchForm />
             </div>
         </section>
     )
 }
 
-export default Brands
+export default Branches

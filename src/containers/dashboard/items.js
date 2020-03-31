@@ -5,7 +5,7 @@ import http from '../../services/httpService'
 
 import NewItemForm from '../../components/forms/newItemForm'
 
-const apiEndpoint = 'http://localhost:5000/api/items'
+const apiEndpoint = '/items'
 
 class Items extends React.Component {
     render() {

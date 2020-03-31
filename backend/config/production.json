@@ -1,8 +1,4 @@
 {
     "name": "SalesX Server - Production",
-    "host": "127.0.0.1",
-    "database": {
-        "connection_string": "mongodb://localhost/salesx",
-        "username": "root"
-    }
+    "expressPort": "5900"
 }

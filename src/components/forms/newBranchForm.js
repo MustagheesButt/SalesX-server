@@ -8,7 +8,7 @@ import Form from '../../components/common/form'
 
 const apiEndpoint = '/brands'
 
-class NewBrandForm extends Form {
+class NewBranchForm extends Form {
     constructor(props) {
         super(props)
 
@@ -18,7 +18,7 @@ class NewBrandForm extends Form {
         }
 
         this.schema = Joi.object({
-            name: Joi.string().required().label('Brand Name'),
+            name: Joi.string().required().label('Branch Name'),
             businessEmail: Joi.string().email({ tlds: { allow: false } }).label('Business Email'),
             phoneNumber: Joi.string().label('Primary Phone Number'),
             address: Joi.string().label('Address'),
@@ -30,7 +30,7 @@ class NewBrandForm extends Form {
         try {
             const { data } = await http.post(apiEndpoint, this.state.formData)
 
-            toast(`Brand "${data.name}" created!`)
+            toast(`Branch "${data.name}" created!`)
         } catch ({ response }) {
             if (response.errors && response.statusCode === 400) {
                 const errors = this.state.errors
@@ -44,7 +44,7 @@ class NewBrandForm extends Form {
         return (
             <div>
                 <form onSubmit={this.submitHandler}>
-                    {this.renderInput('name', 'Brand Name')}
+                    {this.renderInput('name', 'Branch Name')}
                     {this.renderInput('businessEmail', 'Business Email', 'email')}
                     {this.renderInput('phoneNumber', 'Primary Phone Number')}
                     {this.renderInput('address', 'Address')}
@@ -56,4 +56,4 @@ class NewBrandForm extends Form {
     }
 }
 
-export default NewBrandForm
+export default NewBranchForm

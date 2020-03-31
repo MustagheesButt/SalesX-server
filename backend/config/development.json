@@ -1,8 +1,6 @@
 {
     "name": "SalesX Server - Development",
-    "host": "127.0.0.1",
     "database": {
-        "connection_string": "mongodb://localhost/salesx",
-        "username": "root"
+        "connection_string": "mongodb://localhost/salesx"
     }
 }

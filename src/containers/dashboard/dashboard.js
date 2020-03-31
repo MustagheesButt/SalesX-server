@@ -3,6 +3,7 @@ import { Route, NavLink } from 'react-router-dom'
 
 import Items from './items'
 import Brands from './brands'
+import Branches from './branches'
 
 import './dashboard.css'
 
@@ -49,14 +50,6 @@ const Guide = (props) => {
             <h2>Guide</h2>
             <p>To begin, you need to create a shop. Then you would like to add some employees. And then some items (that your shops will sell).</p>
             <p>Once any one of your employees sign in to the SalesX client, the client will sync with the list of items you have entered.</p>
-        </section>
-    )
-}
-
-const Branches = (props) => {
-    return (
-        <section className='card'>
-            <h2>Add New Branches</h2>
         </section>
     )
 }
