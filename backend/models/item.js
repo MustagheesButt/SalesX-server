@@ -1,4 +1,5 @@
 const Joi = require('joi')
+Joi.objectId = require('joi-objectid')(Joi)
 const mongoose = require('mongoose')
 
 const Item = mongoose.model('Item', mongoose.Schema({
@@ -16,9 +17,10 @@ const Item = mongoose.model('Item', mongoose.Schema({
         type: Number,
         required: true
     },
-    createdOn: {
-        type: Date,
-        default: Date.now
+    brandId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Brand',
+        required: true
     },
     updatedOn: {
         type: Date,
@@ -31,7 +33,8 @@ function validateItem(item) {
         name: Joi.string().min(1).required(),
         description: Joi.string(),
         barcode: Joi.string(),
-        price: Joi.number().required()
+        price: Joi.number().required(),
+        brandId: Joi.objectId().required()
     }
 
     return Joi.validate(item, schema)

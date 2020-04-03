@@ -1,6 +1,8 @@
 import React from 'react'
 import Joi from '@hapi/joi'
 
+import notificationService from '../../services/notificationService'
+
 import Input from './input'
 
 class Form extends React.Component {
@@ -22,14 +24,15 @@ class Form extends React.Component {
         const obj = { [name]: value }
 
         const schema = Joi.object({ [name]: this.schema.extract(name) })
-        const { error } = schema.validate(obj)
 
+        const { error } = schema.validate(obj)
         return error ? error.details[0].message : null
     }
 
     validate() {
         const options = { abortEarly: false }
-        const { error } = this.schema.validate(this.state.formData, options)
+        const schema = Joi.compile(this.schema)
+        const { error } = schema.validate(this.state.formData, options)
 
         const errors = {}
         if (error) {
@@ -47,7 +50,7 @@ class Form extends React.Component {
         const errors = this.validate()
         this.setState({ errors: errors })
 
-        if (Object.keys(errors).length > 0) return
+        if (Object.keys(errors).length > 0) return notificationService.alertWarning('There were some errors in the form submission')
 
         this.postForm()
     }
@@ -70,6 +73,25 @@ class Form extends React.Component {
         return (
             <div className='form-group'>
                 <button type='submit'>{text}</button>
+            </div>
+        )
+    }
+
+    renderSelect(name, label, options = []) {
+        const { formData, errors } = this.state
+        options = options.map(option => {
+            return <option key={option.value} value={option.value}>{option.text}</option>
+        })
+        
+        return (
+            <div className='form-group'>
+                <label>{label}</label>
+                <select name={name} value={formData[name]} onChange={this.inputChangeHandler}>
+                    {options}
+                </select>
+                <div className='alert alert-danger'>
+                    {errors[name]}
+                </div>
             </div>
         )
     }

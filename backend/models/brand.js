@@ -9,23 +9,32 @@ const brandSchema = mongoose.Schema({
     },
     businessEmail: {
         type: String,
-        maxlength: 255,
-        unique: true
+        maxlength: 255
     },
     phoneNumber: {
         type: String,
-        minlength: 6,
         maxlength: 60,
     },
-    address: {
+    website: {
         type: String,
-        minlength: 5,
-        maxlength: 1000
+        maxlength: 150
     },
     description: {
         type: String,
         maxlength: 1200
     },
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    items: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Item'
+    }],
+    branches: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Branch'
+    }],
     updatedOn: {
         type: Date,
         default: Date.now
@@ -37,10 +46,10 @@ const Brand = mongoose.model('Brand', brandSchema)
 function validateBrand(brand) {
     const schema = {
         name: Joi.string().max(255).required(),
-        businessEmail: Joi.string().email(),
-        phoneNumber: Joi.string().min(6).max(60),
-        address: Joi.string().max(1000),
-        description: Joi.string().max(1200)
+        businessEmail: Joi.string().email().allow(''),
+        phoneNumber: Joi.string().min(6).max(60).allow(''),
+        website: Joi.string().min(3).max(150).allow(''),
+        description: Joi.string().max(1200).allow('')
     }
 
     return Joi.validate(brand, schema)

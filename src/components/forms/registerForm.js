@@ -1,6 +1,5 @@
 import React from 'react'
 import Joi from '@hapi/joi'
-import { toast } from 'react-toastify'
 
 import Form from '../../components/common/form'
 
@@ -27,7 +26,6 @@ class RegisterForm extends Form {
     async postForm() {
         try {
             const response = await userService.register(this.state.formData)
-            toast.success(`${response.data.firstName} registered successfully!`)
             authService.loginWithJwt(response.headers['x-auth-token'])
 
             window.location = '/dashboard'

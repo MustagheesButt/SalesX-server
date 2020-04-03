@@ -7,6 +7,7 @@ const mongoose = require('mongoose')
 const users = require('./routes/users')
 const items = require('./routes/items')
 const brands = require('./routes/brands')
+const branches = require('./routes/branches')
 const auth = require('./routes/auth')
 
 const app = express()
@@ -34,6 +35,7 @@ app.use(cors({
 app.use('/api/users', users)
 app.use('/api/items', items)
 app.use('/api/brands', brands)
+app.use('/api/branches', branches)
 app.use('/api/auth', auth)
 
 app.get('/', (req, res) => {

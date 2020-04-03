@@ -30,7 +30,11 @@ const userSchema = mongoose.Schema({
     updatedOn: {
         type: Date,
         default: Date.now
-    }
+    },
+    brands: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Brand'
+    }]
 })
 
 userSchema.methods.generateAuthToken = function() {

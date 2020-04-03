@@ -1,8 +1,8 @@
 import React from 'react'
-import axios from 'axios'
 import Joi from '@hapi/joi'
-import { toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
+
+import http from '../../services/httpService'
+import notificationService from '../../services/notificationService'
 
 import Form from '../common/form'
 
@@ -13,31 +13,45 @@ class NewItemForm extends Form {
         super(props)
 
         this.state = {
-            formData: { name: '', barcode: '', price: '', description: '' },
-            errors: {}
+            formData: { name: '', barcode: '', price: '', description: '', brandId: '' },
+            errors: {},
+            brands: []
         }
 
         this.schema = Joi.object({
             name: Joi.string().required().label('Item Name'),
             barcode: Joi.string().label('Barcode'),
             price: Joi.number().required().label('Price'),
-            description: Joi.string().label('Description')
+            description: Joi.string().label('Description'),
+            brandId: Joi.string().required()
         })
+    }
+
+    async componentDidMount() {
+        const { data: brands } = await http.get('/brands')
+        const {formData} = this.state
+        formData.brandId = brands[0]._id
+        
+        this.setState({ brands, formData })
     }
 
     async postForm() {
         try {
-            const { data } = await axios.post(apiEndpoint, this.state.formData)
-            toast(`Created new item ${data.name}`)
+            const { data } = await http.post(apiEndpoint, this.state.formData)
+            notificationService.alertSuccess(`Created new item ${data.name}`)
         } catch ({ response }) {
-            toast(`Something went wrong! ${response.data}`)
+            notificationService.alertDanger(`Something went wrong! ${response.data}`)
         }
     }
 
     render() {
+        const brands = this.state.brands.map(brand => {
+            return { text: brand.name, value: brand._id }
+        })
         return (
             <div>
                 <form onSubmit={this.submitHandler}>
+                    {this.renderSelect('brandId', 'Brand', brands)}
                     {this.renderInput('name', 'Item Name')}
                     {this.renderInput('barcode', 'Barcode')}
                     {this.renderInput('price', 'Price', 'number')}

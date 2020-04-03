@@ -42,7 +42,7 @@ class AllBrands extends React.Component {
         const brandsList = this.state.brands.map(brand => {
             return (
                 <tr key={brand._id}>
-                    <td>{brand._id}</td><td>{brand.name}</td><td>{brand.businessEmail || 'N/A'}</td><td>{brand.phoneNumber}</td><td>{brand.address || 'N/A'}</td><td>{brand.description || 'N/A'}</td>
+                    <td>{brand.name}</td><td>{brand.businessEmail || 'N/A'}</td><td>{brand.phoneNumber}</td><td>{brand.website || 'N/A'}</td><td>{brand.description || 'N/A'}</td>
                 </tr>
             )
         })
@@ -55,11 +55,10 @@ class AllBrands extends React.Component {
                     <table style={{ width: '100%' }}>
                         <thead style={{ textAlign: 'left' }}>
                             <tr>
-                                <th>ID</th>
                                 <th>Name</th>
                                 <th>Business Email</th>
                                 <th>Phone Number</th>
-                                <th>Address</th>
+                                <th>Website</th>
                                 <th>Description</th>
                             </tr>
                         </thead>

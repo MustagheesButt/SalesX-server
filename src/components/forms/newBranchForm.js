@@ -1,8 +1,8 @@
 import React from 'react'
 import Joi from '@hapi/joi'
-import { toast } from 'react-toastify'
 
 import http from '../../services/httpService'
+import notificationService from '../../services/notificationService'
 
 import Form from '../../components/common/form'
 
@@ -19,18 +19,17 @@ class NewBranchForm extends Form {
 
         this.schema = Joi.object({
             name: Joi.string().required().label('Branch Name'),
-            businessEmail: Joi.string().email({ tlds: { allow: false } }).label('Business Email'),
-            phoneNumber: Joi.string().label('Primary Phone Number'),
-            address: Joi.string().label('Address'),
-            description: Joi.string().label('Description')
+            businessEmail: Joi.string().email({ tlds: { allow: false } }).label('Business Email').allow(''),
+            phoneNumber: Joi.string().label('Primary Phone Number').allow(''),
+            address: Joi.string().label('Address').allow(''),
+            description: Joi.string().label('Description').allow('')
         })
     }
 
     async postForm() {
         try {
             const { data } = await http.post(apiEndpoint, this.state.formData)
-
-            toast(`Branch "${data.name}" created!`)
+            notificationService.alertSuccess(`Branch "${data.name}" created!`)
         } catch ({ response }) {
             if (response.errors && response.statusCode === 400) {
                 const errors = this.state.errors
