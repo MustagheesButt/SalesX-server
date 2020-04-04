@@ -7,15 +7,13 @@ import NewItemForm from '../../components/forms/newItemForm'
 
 const apiEndpoint = '/items'
 
-class Items extends React.Component {
-    render() {
-        return (
-            <React.Fragment>
-                <Route path='/dashboard/items' exact component={AllItems} />
-                <Route path='/dashboard/items/new-item' component={NewItem} />
-            </React.Fragment>
-        )
-    }
+const Items = (props) => {
+    return (
+        <React.Fragment>
+            <Route path='/dashboard/items' exact component={AllItems} />
+            <Route path='/dashboard/items/new-item' component={NewItem} />
+        </React.Fragment>
+    )
 }
 
 class AllItems extends React.Component {
@@ -35,15 +33,18 @@ class AllItems extends React.Component {
             const { data: items } = await http.get(apiEndpoint + `?brandId=${this.state.selectedBrand._id}`)
             const filtered = items // items.filter(item => item.brandId === this.state.selectedBrand._id)
             this.setState({ items: filtered })
-        } catch ({ response }) {
-            console.error(response.data)
+        } catch (err) {
+            console.log(err)
+            //console.error(response.data)
         }
     }
 
     async populateBrands() {
         try {
             const { data: brands } = await http.get('/brands')
-            this.setState({ brands, selectedBrand: brands[0] })
+
+            if (brands.length > 0)
+                this.setState({ brands, selectedBrand: brands[0] })
         } catch ({ response }) {
             console.error(response.data)
         }
@@ -59,7 +60,16 @@ class AllItems extends React.Component {
         this.setState({ selectedBrand: selectedBrand }, this.populateItems)
     }
 
-    render() {
+    renderNoBrandsMsg() {
+        return (
+            <section className='card depth-3'>
+                <h2>Oops! Looks like you don't have any brands yet.</h2>
+                <p>Create at least one brand first, so you can add the items/products associated with that particular brand.</p>
+            </section>
+        )
+    }
+
+    renderItemsList() {
         const itemsList = this.state.items.map(item => {
             return (
                 <tr key={item._id}>
@@ -99,17 +109,49 @@ class AllItems extends React.Component {
             </section>
         )
     }
+
+    render() {
+        if (this.state.brands.length > 0) {
+            return this.renderItemsList()
+        }
+
+        return this.renderNoBrandsMsg()
+    }
 }
 
-const NewItem = (props) => {
-    return (
-        <section className='card depth-3'>
-            <h2>Add New Items</h2>
-            <div>
-                <NewItemForm />
-            </div>
-        </section>
-    )
+class NewItem extends React.Component {
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            brands: []
+        }
+    }
+
+    async componentDidMount() {
+        const { data: brands } = await http.get('/brands')
+        this.setState({ brands })
+    }
+
+    render() {
+        if (this.state.brands.length > 0) {
+            return (
+                <section className='card depth-3'>
+                    <h2>Add New Items</h2>
+                    <div>
+                        <NewItemForm brands={this.state.brands} />
+                    </div>
+                </section>
+            )
+        }
+
+        return (
+            <section className='card depth-3'>
+                <h2>Oops! Looks like you don't have any brands yet.</h2>
+                <p>Create at least one brand first, so you can add the items/products associated with that particular brand.</p>
+            </section>
+        )
+    }
 }
 
 export default Items

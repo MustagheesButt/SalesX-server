@@ -3,7 +3,7 @@ const _ = require('lodash')
 const mongoose = require('mongoose')
 
 const { Branch, validateBranch } = require('../models/branch')
-const { User } = require('../models/user')
+const { Brand } = require('../models/brand')
 
 const auth = require('../middleware/auth')
 
@@ -35,7 +35,7 @@ router.post('/', auth, async (req, res) => {
     const session = await mongoose.startSession()
     session.startTransaction()
 
-    const branch = new Branch(_.pick(req.body, ['name', 'businessEmail', 'phoneNumber', 'website', 'description', 'brandId']))
+    const branch = new Branch(_.pick(req.body, ['name', 'businessEmail', 'phoneNumber', 'address', 'brandId']))
     const result = await branch.save({ session })
 
     // Save branch's ID to the brand it was added to
@@ -53,21 +53,21 @@ router.put('/:id', auth, async (req, res) => {
     if (error)
         return res.status(400).send(error.details[0].message)
 
-    const brand = await brand.findByIdAndUpdate(req.params.id, _.pick(req.body, ['name', 'businessEmail', 'phoneNumber', 'address', 'description']))
+    const branch = await Branch.findByIdAndUpdate(req.params.id, _.pick(req.body, ['name', 'businessEmail', 'phoneNumber', 'address', 'description']))
 
-    if (!brand)
-        return res.status(404).send(`Could not find brand with id: ${req.params.id}`)
+    if (!branch)
+        return res.status(404).send(`Could not find branch with id: ${req.params.id}`)
 
-    res.send(brand)
+    res.send(branch)
 })
 
 router.delete('/:id', auth, async (req, res) => {
-    const brand = await Brand.findByIdAndDelete(req.params.id)
+    const branch = await Branch.findByIdAndDelete(req.params.id)
 
-    if (!brand)
-        return res.status(404).send(`Could not find brand with id: ${req.params.id}`)
+    if (!branch)
+        return res.status(404).send(`Could not find branch with id: ${req.params.id}`)
 
-    res.send(brand)
+    res.send(branch)
 })
 
 module.exports = router

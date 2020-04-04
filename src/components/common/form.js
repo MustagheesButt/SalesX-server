@@ -50,7 +50,7 @@ class Form extends React.Component {
         const errors = this.validate()
         this.setState({ errors: errors })
 
-        if (Object.keys(errors).length > 0) return notificationService.alertWarning('There were some errors in the form submission')
+        if (Object.keys(errors).length > 0) return notificationService.alertWarning(`There were some errors in the form submission.`)
 
         this.postForm()
     }

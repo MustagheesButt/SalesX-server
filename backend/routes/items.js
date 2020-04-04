@@ -3,6 +3,7 @@ const _ = require('lodash')
 const mongoose = require('mongoose')
 
 const { Item, validateItem } = require('../models/item')
+const { Brand } = require('../models/brand')
 const auth = require('../middleware/auth')
 
 const router = express.Router()
@@ -41,7 +42,7 @@ router.post('/', auth, async (req, res) => {
     const brand = await Brand.findOne({ _id: req.body.brandId })
     brand.items.push(result._id)
     await brand.save({ session })
-    
+
     await session.commitTransaction()
 
     res.send(result)

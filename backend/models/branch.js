@@ -1,10 +1,11 @@
-const Joi = require('joi')
+const Joi = require('@hapi/joi')
 Joi.objectId = require('joi-objectid')(Joi)
 const mongoose = require('mongoose')
 
-const Branch = mongoose.model('Brand', mongoose.Schema({
+const Branch = mongoose.model('Branch', mongoose.Schema({
     name: {
         type: String,
+        unique: true,
         required: true
     },
     businessEmail: {
@@ -15,7 +16,7 @@ const Branch = mongoose.model('Brand', mongoose.Schema({
         type: String,
         maxlength: 60,
     },
-    description: {
+    address: {
         type: String
     },
     brandId: {
@@ -34,15 +35,15 @@ const Branch = mongoose.model('Brand', mongoose.Schema({
 }))
 
 function validateBranch(branch) {
-    const schema = {
+    const schema = Joi.object({
         name: Joi.string().min(1).required(),
         businessEmail: Joi.string().email().allow(''),
         phoneNumber: Joi.string().allow(''),
-        description: Joi.string().allow(''),
+        address: Joi.string().allow(''),
         brandId: Joi.objectId().required()
-    }
+    })
 
-    return Joi.validate(branch, schema)
+    return schema.validate(branch)
 }
 
 module.exports = {

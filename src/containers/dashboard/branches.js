@@ -42,7 +42,7 @@ class AllBranches extends React.Component {
         const branchesList = this.state.branches.map(branch => {
             return (
                 <tr key={branch._id}>
-                    <td>{branch._id}</td><td>{branch.name}</td><td>{branch.businessEmail || 'N/A'}</td><td>{branch.phoneNumber}</td><td>{branch.address || 'N/A'}</td><td>{branch.description || 'N/A'}</td>
+                    <td>{branch.name}</td><td>{branch.businessEmail || 'N/A'}</td><td>{branch.phoneNumber || 'N/A'}</td><td>{branch.address || 'N/A'}</td>
                 </tr>
             )
         })
@@ -55,12 +55,10 @@ class AllBranches extends React.Component {
                     <table style={{ width: '100%' }}>
                         <thead style={{ textAlign: 'left' }}>
                             <tr>
-                                <th>ID</th>
                                 <th>Name</th>
                                 <th>Business Email</th>
                                 <th>Phone Number</th>
                                 <th>Address</th>
-                                <th>Description</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -73,15 +71,39 @@ class AllBranches extends React.Component {
     }
 }
 
-const NewBranch = (props) => {
-    return (
-        <section className='card depth-3'>
-            <h2>Create a New Branch</h2>
-            <div>
-                <NewBranchForm />
-            </div>
-        </section>
-    )
+class NewBranch extends React.Component {
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            brands: []
+        }
+    }
+
+    async componentDidMount() {
+        const { data: brands } = await http.get('/brands')
+        this.setState({ brands })
+    }
+
+    render() {
+        if (this.state.brands.length > 0) {
+            return (
+                <section className='card depth-3'>
+                    <h2>Create a New Branch</h2>
+                    <div>
+                        <NewBranchForm brands={this.state.brands} />
+                    </div>
+                </section>
+            )
+        }
+
+        return (
+            <section className='card depth-3'>
+                <h2>Oops! Looks like you don't have any brands yet.</h2>
+                <p>Create at least one brand first, so you can add that brand's branches.</p>
+            </section>
+        )
+    }
 }
 
 export default Branches

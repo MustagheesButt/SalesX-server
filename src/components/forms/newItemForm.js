@@ -14,8 +14,7 @@ class NewItemForm extends Form {
 
         this.state = {
             formData: { name: '', barcode: '', price: '', description: '', brandId: '' },
-            errors: {},
-            brands: []
+            errors: {}
         }
 
         this.schema = Joi.object({
@@ -27,12 +26,11 @@ class NewItemForm extends Form {
         })
     }
 
-    async componentDidMount() {
-        const { data: brands } = await http.get('/brands')
+    componentDidMount() {
         const {formData} = this.state
-        formData.brandId = brands[0]._id
+        formData.brandId = this.props.brands[0]._id
         
-        this.setState({ brands, formData })
+        this.setState({ formData })
     }
 
     async postForm() {
@@ -45,9 +43,10 @@ class NewItemForm extends Form {
     }
 
     render() {
-        const brands = this.state.brands.map(brand => {
+        const brands = this.props.brands.map(brand => {
             return { text: brand.name, value: brand._id }
         })
+
         return (
             <div>
                 <form onSubmit={this.submitHandler}>

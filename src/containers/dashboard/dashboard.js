@@ -4,6 +4,7 @@ import { Route, NavLink, Link } from 'react-router-dom'
 import Items from './items'
 import Brands from './brands'
 import Branches from './branches'
+import Employees from './employees'
 
 import './dashboard.css'
 
@@ -29,8 +30,11 @@ class Dashboard extends React.Component {
                                 <li><NavLink to='/dashboard/items/new-item'>Add New Item</NavLink></li>
                             </ul>
                         </li>
-                        <li><NavLink to='/dashboard/inventory'>Inventory</NavLink></li>
-                        <li><NavLink to='/dashboard/employees'>Employees</NavLink></li>
+                        <li><NavLink to='/dashboard/employees'>Employees</NavLink>
+                            <ul>
+                                <li><NavLink to='/dashboard/employees/new-employee'>Add New Employee</NavLink></li>
+                            </ul>
+                        </li>
                     </ul>
                 </aside>
                 <div id='main'>
@@ -38,6 +42,7 @@ class Dashboard extends React.Component {
                     <Route path='/dashboard/brands' component={Brands} />
                     <Route path='/dashboard/branches' component={Branches} />
                     <Route path='/dashboard/items' component={Items} />
+                    <Route path='/dashboard/employees' component={Employees} />
                 </div>
             </main>
         )

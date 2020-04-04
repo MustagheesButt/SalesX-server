@@ -1,4 +1,4 @@
-const Joi = require('joi')
+const Joi = require('@hapi/joi')
 Joi.objectId = require('joi-objectid')(Joi)
 const mongoose = require('mongoose')
 
@@ -29,15 +29,15 @@ const Item = mongoose.model('Item', mongoose.Schema({
 }))
 
 function validateItem(item) {
-    const schema = {
+    const schema = Joi.object({
         name: Joi.string().min(1).required(),
         description: Joi.string(),
         barcode: Joi.string(),
         price: Joi.number().required(),
         brandId: Joi.objectId().required()
-    }
+    })
 
-    return Joi.validate(item, schema)
+    return schema.validate(item)
 }
 
 module.exports = {

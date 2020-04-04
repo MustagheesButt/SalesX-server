@@ -1,5 +1,5 @@
 const express = require('express')
-const Joi = require('joi')
+const Joi = require('@hapi/joi')
 const bcrypt = require('bcrypt')
 
 const { User } = require('../models/user')
@@ -23,12 +23,12 @@ router.post('/', async (req, res) => {
 })
 
 function validateAuthRequest(user) {
-    const schema = {
+    const schema = Joi.object({
         email: Joi.string().email().max(255).required(),
         password: Joi.string().required()
-    }
+    })
 
-    return Joi.validate(user, schema)
+    return schema.validate(user)
 }
 
 module.exports = router

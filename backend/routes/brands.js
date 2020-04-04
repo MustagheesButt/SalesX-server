@@ -49,7 +49,7 @@ router.put('/:id', auth, async (req, res) => {
     if (error)
         return res.status(400).send(error.details[0].message)
 
-    const brand = await brand.findByIdAndUpdate(req.params.id, _.pick(req.body, ['name', 'businessEmail', 'phoneNumber', 'address', 'description']))
+    const brand = await Brand.findByIdAndUpdate(req.params.id, _.pick(req.body, ['name', 'businessEmail', 'phoneNumber', 'address', 'description']))
 
     if (!brand)
         return res.status(404).send(`Could not find brand with id: ${req.params.id}`)

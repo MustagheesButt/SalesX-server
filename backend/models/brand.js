@@ -1,4 +1,4 @@
-const Joi = require('joi')
+const Joi = require('@hapi/joi')
 const mongoose = require('mongoose')
 
 const brandSchema = mongoose.Schema({
@@ -35,6 +35,10 @@ const brandSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Branch'
     }],
+    employees: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Employee'
+    }],
     updatedOn: {
         type: Date,
         default: Date.now
@@ -44,15 +48,15 @@ const brandSchema = mongoose.Schema({
 const Brand = mongoose.model('Brand', brandSchema)
 
 function validateBrand(brand) {
-    const schema = {
+    const schema = Joi.object({
         name: Joi.string().max(255).required(),
         businessEmail: Joi.string().email().allow(''),
         phoneNumber: Joi.string().min(6).max(60).allow(''),
         website: Joi.string().min(3).max(150).allow(''),
         description: Joi.string().max(1200).allow('')
-    }
+    })
 
-    return Joi.validate(brand, schema)
+    return schema.validate(brand)
 }
 
 module.exports = {

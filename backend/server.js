@@ -8,6 +8,7 @@ const users = require('./routes/users')
 const items = require('./routes/items')
 const brands = require('./routes/brands')
 const branches = require('./routes/branches')
+const employees = require('./routes/employees')
 const auth = require('./routes/auth')
 
 const app = express()
@@ -36,6 +37,7 @@ app.use('/api/users', users)
 app.use('/api/items', items)
 app.use('/api/brands', brands)
 app.use('/api/branches', branches)
+app.use('/api/employees', employees)
 app.use('/api/auth', auth)
 
 app.get('/', (req, res) => {
