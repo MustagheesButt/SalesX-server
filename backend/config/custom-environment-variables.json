@@ -1,6 +1,0 @@
-{
-    "database": {
-        "connection_string": "SALESX_DB_CONN_STRING"
-    },
-    "jwtPrivateKey": "SALESX_JWT_KEY"
-}

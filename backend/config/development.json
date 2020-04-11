@@ -1,6 +1,0 @@
-{
-    "name": "SalesX Server - Development",
-    "database": {
-        "connection_string": "mongodb://localhost/salesx"
-    }
-}
