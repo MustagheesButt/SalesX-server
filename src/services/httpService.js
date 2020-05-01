@@ -25,5 +25,6 @@ function setJwt(jwt) {
 export default {
     get: axios.get,
     post: axios.post,
+    put: axios.put,
     setJwt
 }

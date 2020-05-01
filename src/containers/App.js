@@ -11,6 +11,7 @@ import Home from './home/home'
 import Login from './authentication/login'
 import Register from './authentication/register'
 import About from './about/about'
+import Help from './help/help'
 import Dashboard from './dashboard/dashboard'
 
 import './App.css'
@@ -31,7 +32,7 @@ class App extends React.Component {
 
     render() {
         return (
-            <div className='grid-container'>
+            <div className='grid-container main-layout'>
                 <BrowserRouter>
                     <header>
                         <Navbar user={this.state.user} />
@@ -41,6 +42,7 @@ class App extends React.Component {
                     <Route path='/login' exact component={Login} />
                     <Route path='/register' exact component={Register} />
                     <Route path='/about' exact component={About} />
+                    <Route path='/help' exact component={Help} />
 
                     <ProtectedRoute path='/dashboard' component={Dashboard} />
                     <Route path='/logout' exact component={Logout} />

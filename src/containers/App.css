@@ -12,8 +12,35 @@ a:hover {
     color: crimson;
 }
 
-h1, h2, h3 {
+h1, h2, h3, h4, h5, h6 {
     color: #ffffff;
+    font-weight: 400;
+    margin: 10px 0;
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: 400;
+}
+
+h2 {
+    font-size: 2rem;
+}
+
+h3 {
+    font-size: 1.75rem;
+}
+
+h4 {
+    font-size: 1.5rem;
+}
+
+h5 {
+    font-size: 1.25rem;
+}
+
+h6 {
+    font-size: 1rem;
 }
 
 header, main, footer {
@@ -24,7 +51,7 @@ footer {
     background-color: #000000;
 }
 
-footer > div {
+footer>div {
     margin: 15px;
 }
 
@@ -36,14 +63,21 @@ section.card {
 .grid-container {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
+}
+
+.main-layout.grid-container {
     grid-template-rows: 50px 1fr 50px;
+}
+
+main.grid-container {
     min-height: 100vh;
 }
 
-.flex-container {
+.d-flex {
     display: flex;
 }
-.flex-container.flex-end {
+
+.d-flex.flex-end {
     justify-content: right;
 }
 
@@ -60,6 +94,8 @@ section.card {
 }
 
 .form-group {
+    display: flex;
+    flex-direction: column;
     margin-bottom: 20px;
 }
 
@@ -74,4 +110,10 @@ section.card {
 
 .alert-danger {
     color: rgb(220, 55, 85);
+}
+
+.display-3 {
+    font-size: 4.5rem;
+    font-weight: 300;
+    line-height: 1.2;
 }

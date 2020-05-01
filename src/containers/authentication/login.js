@@ -10,7 +10,7 @@ const Login = (props) => {
                 <h1>Login to your <span style={{ color: 'crimson' }}>SalesX</span> account.</h1>
             </div>
 
-            <section className='card depth-2' style={{ margin: '20px auto' }}>
+            <section className='card depth-2' style={{ margin: '20px auto', width: '25%' }}>
                 <div>
                     <LoginForm {...props} />
                 </div>

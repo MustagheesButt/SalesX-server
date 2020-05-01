@@ -1,15 +1,23 @@
 import React from 'react'
 
+import './home.css'
+
 const Home = (props) => {
     return (
         <main id='home'>
             <section className='jumbotron' style={{
-                backgroundImage: 'url(assets/images/blake-wisz-tE6th1h6Bfk.jpg)',
-                backgroundSize: 'cover',
-                minHeight: '600px',
-                overflow: 'auto' }}>
-                <h3>SalesX</h3>
-                <h1>A next-gen Point of Sales system, designed to help you grow your business.</h1>
+                height: '600px',
+                overflow: 'auto'
+            }}>
+                <div className='d-flex' style={{
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    height: '70%',
+                    padding: '0 80px'
+                }}>
+                    <h1 className='display-3'>SalesX</h1>
+                    <h2>A next-gen Sales & Inventory system, designed to help your business grow.</h2>
+                </div>
             </section>
         </main>
     )

@@ -10,7 +10,7 @@ const Register = (props) => {
                 <h1>Register a new <span style={{ color: 'crimson' }}>SalesX</span> account.</h1>
             </div>
 
-            <section className='card depth-2' style={{ margin: 'auto' }}>
+            <section className='card depth-2' style={{ margin: 'auto', width: '25%' }}>
                 <div>
                     <RegisterForm />
                 </div>

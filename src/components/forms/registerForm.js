@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import Joi from '@hapi/joi'
 
 import Form from '../../components/common/form'
@@ -46,6 +47,7 @@ class RegisterForm extends Form {
                     {this.renderInput('lastName', 'Last Name')}
                     {this.renderInput('email', 'Email', 'email')}
                     {this.renderInput('password', 'Password', 'password')}
+                    <p>By clicking on the Register button, you agree to our <Link>Terms & Conditions</Link> and <Link>Privacy Policy</Link>.</p>
                     {this.renderButton('Register')}
                 </form>
             </div>

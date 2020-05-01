@@ -11,20 +11,3 @@ You have to setup 2 environment variables, `SALESX_DB_CONN_STRING` and `SALESX_J
 ### MongoDB
 
 The MongoDB database must be running as a replica set, as the SalesX back-end uses the transaction feature.
-
-## API Documentation
-
-- `/users`
-
-    - `GET`
-    
-        Returns all users.
-    - `POST`
-
-        Add a user to the users collection.
-- `/users/<id>`
-
-    - `GET`
-    
-        Returns a specific user having `<id>`.
-

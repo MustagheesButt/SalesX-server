@@ -1,5 +1,7 @@
 main#auth {
     grid-template-rows: 0.1fr 1fr 50px;
+    background-image: url('/assets/images/login-bg.jpg');
+    background-size: cover;
 }
 
 main#auth > div, main#auth > section.card {

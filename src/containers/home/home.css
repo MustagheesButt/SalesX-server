@@ -1,3 +1,7 @@
 #home .jumbotron {
-    grid-column: span 12;
+    background-image: url(/assets/images/blake-wisz-tE6th1h6Bfk.jpg);
+}
+
+.jumbotron {
+    background-size: cover;
 }
