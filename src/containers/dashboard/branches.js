@@ -133,9 +133,14 @@ class BranchDetails extends React.Component {
         const oldBranch = this.state.branch
         try {
             const branch = this.state.branch
-            branch.inventory.push({ itemId, quantity: value })
+            const itemIndex = branch.inventory.findIndex(x => x.itemId === itemId)
+            if (itemIndex === -1)
+                branch.inventory.push({ itemId, quantity: value })
+            else
+                branch.inventory[itemIndex].quantity = value
+            
             this.setState({ branch })
-            const { data } = await http.put(`${apiEndpoint}/${this.branchId}`, branch)
+            const { data } = await http.put(`${apiEndpoint}/${this.branchId}/inventory`, branch.inventory)
             console.log(data)
         } catch (ex) {
             console.log(ex)
