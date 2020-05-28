@@ -13,7 +13,7 @@ class NewBranchForm extends Form {
         super(props)
 
         this.state = {
-            formData: { name: '', businessEmail: '', phoneNumber: '', address: '', brandId: '' },
+            formData: { name: '', businessEmail: '', phoneNumber: '', address: '', brand: '' },
             errors: {}
         }
 
@@ -22,7 +22,7 @@ class NewBranchForm extends Form {
             businessEmail: Joi.string().email({ tlds: { allow: false } }).label('Business Email').allow(''),
             phoneNumber: Joi.string().label('Primary Phone Number').allow(''),
             address: Joi.string().label('Address').allow(''),
-            brandId: Joi.string().required()
+            brand: Joi.string().required()
         })
     }
 
@@ -44,7 +44,7 @@ class NewBranchForm extends Form {
 
     componentDidMount() {
         const {formData} = this.state
-        formData.brandId = this.props.brands[0]._id
+        formData.brand = this.props.brands[0]._id
         
         this.setState({ formData })
     }
@@ -57,7 +57,7 @@ class NewBranchForm extends Form {
         return (
             <div>
                 <form onSubmit={this.submitHandler}>
-                    {this.renderSelect('brandId', 'Brand', brands)}
+                    {this.renderSelect('brand', 'Brand', brands)}
                     {this.renderInput('name', 'Branch Name')}
                     {this.renderInput('businessEmail', 'Business Email', 'email')}
                     {this.renderInput('phoneNumber', 'Primary Phone Number')}

@@ -13,7 +13,7 @@ class NewEmployeeForm extends Form {
         super(props)
 
         this.state = {
-            formData: { firstName: '', lastName: '', email: '', phoneNumber: '', password: '', title: '', salary: '', brandId: '', branchId: '' },
+            formData: { firstName: '', lastName: '', email: '', phoneNumber: '', password: '', title: '', salary: '', brand: '', branch: '' },
             errors: {}
         }
 
@@ -25,15 +25,15 @@ class NewEmployeeForm extends Form {
             password: Joi.string().min(8).required().label('Password'),
             title: Joi.string().label('Job Title').allow(''),
             salary: Joi.number().label('Salary').allow(''),
-            brandId: Joi.string().required(),
-            branchId: Joi.string().required()
+            brand: Joi.string().required(),
+            branch: Joi.string().required()
         })
     }
 
     componentDidMount() {
         const {formData} = this.state
-        formData.brandId = this.props.brands[0]._id
-        formData.branchId = this.props.branches[0]._id
+        formData.brand = this.props.brands[0]._id
+        formData.branch = this.props.branches[0]._id
         
         this.setState({ formData })
     }
@@ -62,8 +62,8 @@ class NewEmployeeForm extends Form {
         return (
             <div>
                 <form onSubmit={this.submitHandler}>
-                    {this.renderSelect('brandId', 'Brand', brands)}
-                    {this.renderSelect('branchId', 'Branch', branches)}
+                    {this.renderSelect('brand', 'Brand', brands)}
+                    {this.renderSelect('branch', 'Branch', branches)}
                     {this.renderInput('firstName', 'First Name')}
                     {this.renderInput('lastName', 'Last Name')}
                     {this.renderInput('email', 'Email', 'email')}

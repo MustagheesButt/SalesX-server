@@ -7,7 +7,7 @@ const Login = (props) => {
     return (
         <main id='auth' className='grid-container depth-1'>
             <div style={{ margin: '20px auto' }}>
-                <h1>Login to your <span style={{ color: 'crimson' }}>SalesX</span> account.</h1>
+                <h1>Login to your <span style={{ color: '#5c49b5' }}>SalesX</span> account.</h1>
             </div>
 
             <section className='card depth-2' style={{ margin: '20px auto', width: '25%' }}>

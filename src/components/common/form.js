@@ -3,7 +3,9 @@ import Joi from '@hapi/joi'
 
 import notificationService from '../../services/notificationService'
 
-import Input from './input'
+import XInput from './xui/xinput'
+import XButton from './xui/xbutton'
+import XSelect from './xui/xselect'
 
 class Form extends React.Component {
 
@@ -59,7 +61,7 @@ class Form extends React.Component {
         const { formData, errors } = this.state
 
         return (
-            <Input
+            <XInput
                 type={type}
                 name={name}
                 label={label}
@@ -72,7 +74,7 @@ class Form extends React.Component {
     renderButton(text) {
         return (
             <div className='form-group'>
-                <button type='submit'>{text}</button>
+                <XButton text={text} clickHandler={this.submitHandler} />
             </div>
         )
     }
@@ -84,15 +86,13 @@ class Form extends React.Component {
         })
         
         return (
-            <div className='form-group'>
-                <label>{label}</label>
-                <select name={name} value={formData[name]} onChange={this.inputChangeHandler}>
-                    {options}
-                </select>
-                <div className='alert alert-danger'>
-                    {errors[name]}
-                </div>
-            </div>
+            <XSelect
+                name={name}
+                label={label}
+                error={errors[name]}
+                options={options}
+                value={formData[name]}
+                onChange={this.inputChangeHandler} />
         )
     }
 }

@@ -13,7 +13,7 @@ class NewItemForm extends Form {
         super(props)
 
         this.state = {
-            formData: { name: '', barcode: '', price: '', description: '', brandId: '' },
+            formData: { name: '', barcode: '', price: '', description: '', brand: '' },
             errors: {}
         }
 
@@ -22,13 +22,13 @@ class NewItemForm extends Form {
             barcode: Joi.string().label('Barcode'),
             price: Joi.number().required().label('Price'),
             description: Joi.string().label('Description'),
-            brandId: Joi.string().required()
+            brand: Joi.string().required()
         })
     }
 
     componentDidMount() {
         const {formData} = this.state
-        formData.brandId = this.props.brands[0]._id
+        formData.brand = this.props.brands[0]._id
         
         this.setState({ formData })
     }
@@ -50,7 +50,7 @@ class NewItemForm extends Form {
         return (
             <div>
                 <form onSubmit={this.submitHandler}>
-                    {this.renderSelect('brandId', 'Brand', brands)}
+                    {this.renderSelect('brand', 'Brand', brands)}
                     {this.renderInput('name', 'Item Name')}
                     {this.renderInput('barcode', 'Barcode')}
                     {this.renderInput('price', 'Price', 'number')}

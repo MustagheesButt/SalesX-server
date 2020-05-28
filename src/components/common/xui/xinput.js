@@ -4,10 +4,11 @@ const inputStyle = {
     border: '0',
     borderBottom: '2px solid blueviolet',
     padding: '5px',
-    color: '#ffffff'
+    color: '#ffffff',
+    outline: 'none'
 }
 
-const Input = ({ name, label, error, ...rest }) => {
+const XInput = ({ name, label, error, ...rest }) => {
     return (
         <div className='form-group'>
             <label>{label}</label>
@@ -19,4 +20,4 @@ const Input = ({ name, label, error, ...rest }) => {
     )
 }
 
-export default Input
+export default XInput

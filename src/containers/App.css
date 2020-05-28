@@ -1,19 +1,27 @@
 body {
-    color: #ffffff;
+    color: #cecece;
 }
 
 a {
-    color: #ffffff;
+    color: #5198e2;
     text-decoration: none;
     transition: 0.5s;
 }
 
+a.active {
+    color: #e2e2e2;
+}
+
+a:focus {
+    outline: none;
+}
+
 a:hover {
-    color: crimson;
+    color: #e2e2e2;
 }
 
 h1, h2, h3, h4, h5, h6 {
-    color: #ffffff;
+    color: #e2e2e2;
     font-weight: 400;
     margin: 10px 0;
 }
@@ -81,6 +89,14 @@ main.grid-container {
     justify-content: right;
 }
 
+.d-flex > .flex-child {
+    margin-left: 10px;
+}
+
+.d-flex > .flex-child:first-of-type {
+    margin-left: 0;
+}
+
 .depth-1 {
     background-color: #121212;
 }
@@ -99,7 +115,7 @@ main.grid-container {
     margin-bottom: 20px;
 }
 
-.form-group > label {
+.form-group>label {
     display: block;
     margin: 5px 0;
 }
@@ -116,4 +132,8 @@ main.grid-container {
     font-size: 4.5rem;
     font-weight: 300;
     line-height: 1.2;
+}
+
+.mt-15 {
+    margin-top: 15px;
 }

@@ -7,7 +7,7 @@ const Register = (props) => {
     return (
         <main id='auth' className='grid-container depth-1'>
             <div style={{ margin: 'auto' }}>
-                <h1>Register a new <span style={{ color: 'crimson' }}>SalesX</span> account.</h1>
+                <h1>Register a new <span style={{ color: '#5c49b5' }}>SalesX</span> account.</h1>
             </div>
 
             <section className='card depth-2' style={{ margin: 'auto', width: '25%' }}>

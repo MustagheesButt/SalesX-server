@@ -1,15 +1,13 @@
 nav {
     background-color: black;
+    align-items: center;
+    height: 100%;
+}
+
+nav .logo img {
+    width: 36px;
 }
 
 nav a {
-    margin: 16px;
-}
-
-nav a.active {
-    color: crimson;
-}
-
-nav a.active:focus {
-    outline: none;
+    margin: 0 16px;
 }

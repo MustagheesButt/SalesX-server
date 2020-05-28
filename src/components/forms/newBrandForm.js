@@ -31,9 +31,9 @@ class NewBrandForm extends Form {
             const { data } = await http.post(apiEndpoint, this.state.formData)
             notificationService.alertSuccess(`Brand "${data.name}" created!`)
         } catch ({ response }) {
-            if (response.errors && response.statusCode === 400) {
+            console.log(response)
+            if (response.errors && response.status === 400) {
                 const errors = this.state.errors
-                
                 this.setState({ errors })
             }
         }

@@ -13,6 +13,7 @@ import Register from './authentication/register'
 import About from './about/about'
 import Help from './help/help'
 import Dashboard from './dashboard/dashboard'
+import Account from './account/account'
 
 import './App.css'
 
@@ -42,14 +43,15 @@ class App extends React.Component {
                     <Route path='/login' exact component={Login} />
                     <Route path='/register' exact component={Register} />
                     <Route path='/about' exact component={About} />
-                    <Route path='/help' exact component={Help} />
+                    <Route path='/help' component={Help} />
 
                     <ProtectedRoute path='/dashboard' component={Dashboard} />
+                    <ProtectedRoute path='/account' component={Account} />
                     <Route path='/logout' exact component={Logout} />
 
                     <footer>
                         <div>
-                            &copy; Copyright, 2020. All rights reserved.
+                            &copy; Copyright <a href='nezuco.com' target='_blank'>Nezuco</a>, 2020. All rights reserved.
                         </div>
                     </footer>
                 </BrowserRouter>

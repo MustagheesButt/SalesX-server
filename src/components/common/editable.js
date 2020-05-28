@@ -16,7 +16,8 @@ class Editable extends React.Component {
     }
 
     commitChange() {
-        this.props.changeHandler(this.props.id, this.state.value)
+        if (this.props.changeHandler)
+            this.props.changeHandler(this.props.id, this.state.value)
         this.setState({ editing: false })
     }
 
