@@ -6,10 +6,7 @@ import './home.css'
 const Home = (props) => {
     return (
         <main id='home'>
-            <section className='jumbotron' style={{
-                height: '600px',
-                overflow: 'auto'
-            }}>
+            <section className='jumbotron'>
                 <div className='d-flex' style={{
                     flexDirection: 'column',
                     justifyContent: 'center',

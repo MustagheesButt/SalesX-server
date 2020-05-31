@@ -1,5 +1,4 @@
 import React from 'react'
-//import logo from '../logo.svg'
 import { BrowserRouter, Route } from 'react-router-dom'
 import authService from '../services/authService'
 
@@ -51,7 +50,7 @@ class App extends React.Component {
 
                     <footer>
                         <div>
-                            &copy; Copyright <a href='nezuco.com' target='_blank'>Nezuco</a>, 2020. All rights reserved.
+                            &copy; Copyright <a href='https://nezuco.com' target='_blank' rel='noopener noreferrer'>Nezuco</a>, 2020. All rights reserved.
                         </div>
                     </footer>
                 </BrowserRouter>
