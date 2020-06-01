@@ -259,7 +259,7 @@ class BranchInventory extends React.Component {
     async componentDidMount() {
         try {
             const { data: branch } = await http.get(`/branches/${this.branchId}`)
-            const { data: items } = await http.get('/items')
+            const { data: items } = await http.get(`/items?brand=${branch.brand}`)
 
             this.setState({ branch, items })
         } catch (ex) {
@@ -278,13 +278,13 @@ class BranchInventory extends React.Component {
             )
     }
 
-    async updateQuantity(itemId, value) {
+    async updateQuantity(item, value) {
         const oldBranch = this.state.branch
         try {
             const branch = this.state.branch
-            const itemIndex = branch.inventory.findIndex(x => x.itemId === itemId)
+            const itemIndex = branch.inventory.findIndex(x => x.item === item)
             if (itemIndex === -1)
-                branch.inventory.push({ itemId, quantity: value })
+                branch.inventory.push({ item, quantity: value })
             else
                 branch.inventory[itemIndex].quantity = value
 
@@ -299,9 +299,9 @@ class BranchInventory extends React.Component {
 
     renderBranchInventory() {
         const inventoryItems = this.state.items.map(item => {
-            const quantity = this.state.branch.inventory.find(x => x.itemId === item._id)?.quantity
+            const quantity = this.state.branch.inventory.find(x => x.item === item._id)?.quantity
             return (
-                <tr key={item._id}>
+                <tr key={item._id} style={{ lineHeight: '32px' }}>
                     <td>{item.name}</td>
                     <td><Editable id={item._id} changeHandler={(itemId, value) => this.updateQuantity(itemId, value)}>{quantity || 0}</Editable></td>
                 </tr>
@@ -310,7 +310,7 @@ class BranchInventory extends React.Component {
 
         return (
             <section className='card depth-2'>
-                <h3>Inventory</h3>
+                <h3>{this.state.branch.name}'s Inventory</h3>
 
                 <table>
                     <thead>
