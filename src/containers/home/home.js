@@ -1,9 +1,13 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import XButton from '../../components/common/xui/xbutton'
 import './home.css'
 
-const Home = (props) => {
+const Home = () => {
+    useEffect(() => {
+        document.title = `Home | ${process.env.REACT_APP_NAME}`
+    })
+
     return (
         <main id='home'>
             <section className='jumbotron'>

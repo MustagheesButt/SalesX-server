@@ -1,6 +1,10 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
-const About = (props) => {
+const About = () => {
+    useEffect(() => {
+        document.title = `About Us | ${process.env.REACT_APP_NAME}`
+    })
+
     return (
         <main className='grid-container depth-1' style={{ backgroundImage: 'url(assets/images/tobias-a-muller-fusq9KwkSF4.jpg)', backgroundSize: 'cover' }}>
             <section className='card depth-2' style={{ gridColumn: 'span 12', margin: '10% auto', width: '50%' }}>

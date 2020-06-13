@@ -5,6 +5,8 @@ import Chart from 'chart.js'
 import http from '../../services/httpService'
 import notificationService from '../../services/notificationService'
 
+import Loading from '../../components/common/loading'
+
 import Items from './items'
 import Brands from './brands'
 import Branches from './branches'
@@ -14,7 +16,7 @@ import Statistics from './statistics'
 
 import './dashboard.css'
 
-const Dashboard = props => {
+const Dashboard = () => {
     return (
         <main className='depth-1 grid-container' id='dashboard'>
             <aside className='depth-2'>
@@ -46,15 +48,17 @@ class DashboardHome extends React.Component {
         super(props)
 
         this.state = {
-            brands: [],
-            branches: [],
-            employees: [],
+            brands: null,
+            branches: null,
+            employees: null,
             invoices: [],
             lowStockBranches: []
         }
     }
 
     async componentDidMount() {
+        document.title = `Dashboard | ${process.env.REACT_APP_NAME}`
+
         try {
             const { data: brands } = await http.get('/brands')
             if (brands.length === 0) return
@@ -131,6 +135,8 @@ class DashboardHome extends React.Component {
     }
 
     render() {
+        if (this.state.brands === null || this.state.branches === null || this.state.employees === null)
+            return <Loading />
         if (this.state.brands.length === 0)
             return this.renderNewComerGuide()
         if (this.state.branches.length === 0)

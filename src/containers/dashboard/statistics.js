@@ -1,6 +1,10 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
-const Statistics = props => {
+const Statistics = () => {
+    useEffect(() => {
+        document.title = `Statistics | ${process.env.REACT_APP_NAME}`
+    })
+
     return (
         <section className='card depth-2'>
             <h2>Coming Soon</h2>

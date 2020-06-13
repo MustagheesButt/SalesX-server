@@ -3,9 +3,10 @@ import { Route, Link } from 'react-router-dom'
 
 import http from '../../services/httpService'
 
-import NewEmployeeForm from '../../components/forms/newEmployeeForm'
 import XSelect from '../../components/common/xui/xselect'
 import XInput from '../../components/common/xui/xinput'
+import Loading from '../../components/common/loading'
+import NewEmployeeForm from '../../components/forms/newEmployeeForm'
 
 const apiEndpoint = '/employees'
 
@@ -22,7 +23,7 @@ class Employees extends React.Component {
     static renderNoBrandMsg() {
         return (
             <section className='card depth-2'>
-                <h2>Oops! Looks like you don't have any brand yet.</h2>
+                <h2>Looks like you don't have any brands yet.</h2>
                 <p>Create at least one brand first, then a branch. After that, you can add new employees.</p>
             </section>
         )
@@ -31,7 +32,7 @@ class Employees extends React.Component {
     static renderNoBranchMsg() {
         return (
             <section className='card depth-2'>
-                <h2>Oops! Looks like you don't have any branch(es) yet.</h2>
+                <h2>Looks like you don't have any branches yet.</h2>
                 <p>Create at least one branch first, then you can start adding new employees.</p>
             </section>
         )
@@ -43,11 +44,11 @@ class AllEmployees extends React.Component {
         super(props)
 
         this.state = {
-            brands: [],
+            brands: null,
             selectedBrand: '',
-            branches: [],
+            branches: null,
             selectedBranch: '',
-            employees: [],
+            employees: null,
             employeesFilter: ''
         }
     }
@@ -62,6 +63,8 @@ class AllEmployees extends React.Component {
     }
 
     async populateBranches() {
+        this.setState({ branches: null })
+
         try {
             const { data: branches } = await http.get(`/branches?brand=${this.state.selectedBrand}`)
 
@@ -73,6 +76,8 @@ class AllEmployees extends React.Component {
     }
 
     async populateEmployees() {
+        this.setState({ employees: null })
+
         try {
             let employees = []
             if (this.state.selectedBranch && this.state.selectedBranch !== '0')
@@ -86,6 +91,8 @@ class AllEmployees extends React.Component {
     }
 
     async componentDidMount() {
+        document.title = `Employees | ${process.env.REACT_APP_NAME}`
+
         await this.populateBrands()
         await this.populateBranches()
         this.populateEmployees()
@@ -104,14 +111,11 @@ class AllEmployees extends React.Component {
         this.setState({ selectedBranch }, this.populateEmployees)
     }
 
-    render() {
-        if (this.state.brands.length === 0)
-            return Employees.renderNoBrandMsg()
-        else if (this.state.branches.length <= 1)
-            return Employees.renderNoBranchMsg()
+    renderEmployeesList() {
+        if (this.state.employees === null) return <Loading />
 
         const employeesList = this.state.employees
-            .filter(employee => 
+            .filter(employee =>
                 (`${employee.firstName} ${employee.lastName}`).toLowerCase().includes(this.state.employeesFilter.toLowerCase())
                 || employee.email?.toLowerCase().includes(this.state.employeesFilter.toLowerCase())
             )
@@ -122,6 +126,42 @@ class AllEmployees extends React.Component {
                     </tr>
                 )
             })
+
+        return (
+            <section className='card depth-2'>
+                {employeesList.length > 0 ?
+                    <div>
+                        <XInput
+                            name='filter'
+                            placeholder='Filter Employees'
+                            value={this.state.employeesFilter}
+                            onChange={(e) => this.setState({ employeesFilter: e.target.value })} />
+
+                        <table style={{ width: '100%' }}>
+                            <thead style={{ textAlign: 'left' }}>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Phone Number</th>
+                                    <th>Title</th>
+                                    <th>Salary</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {employeesList}
+                            </tbody>
+                        </table>
+                    </div>
+                    : <em>Current selection does not have any employees yet.</em>}
+            </section>
+        )
+    }
+
+    render() {
+        if (this.state.brands === null || this.state.branches === null) return <Loading />
+
+        if (this.state.brands.length === 0) return Employees.renderNoBrandMsg()
+        else if (this.state.branches.length <= 1) return Employees.renderNoBranchMsg()
 
         const brandsList = this.state.brands.map(brand => {
             return (
@@ -143,7 +183,7 @@ class AllEmployees extends React.Component {
 
                     <div className='d-flex mt-15'>
                         <div className='flex-child'>
-                            <XSelect label='Select a Brand' name='brand' options={brandsList} onChange={this.brandSelectHandler} />
+                            <XSelect label='Select a Brand' name='brand' value={this.state.selectedBrand} options={brandsList} onChange={this.brandSelectHandler} />
                         </div>
                         <div className='flex-child'>
                             <XSelect label='Select a Branch' name='branch' options={branchesList} onChange={this.branchSelectHandler} />
@@ -151,32 +191,7 @@ class AllEmployees extends React.Component {
                     </div>
                 </section>
 
-                <section className='card depth-2'>
-                    {this.state.employees.length > 0 ?
-                        <div>
-                            <XInput
-                                name='filter'
-                                placeholder='Filter Employees'
-                                value={this.state.employeesFilter}
-                                onChange={(e) => this.setState({ employeesFilter: e.target.value })} />
-
-                            <table style={{ width: '100%' }}>
-                                <thead style={{ textAlign: 'left' }}>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Phone Number</th>
-                                        <th>Title</th>
-                                        <th>Salary</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {employeesList}
-                                </tbody>
-                            </table>
-                        </div>
-                        : <em>Current selection does not have any employees yet.</em>}
-                </section>
+                {this.renderEmployeesList()}
             </React.Fragment>
         )
     }
@@ -187,22 +202,24 @@ class NewEmployee extends React.Component {
         super(props)
 
         this.state = {
-            brands: [],
-            branches: []
+            brands: null,
+            branches: null
         }
     }
 
     async componentDidMount() {
+        document.title = `New Employee | ${process.env.REACT_APP_NAME}`
+
         const { data: brands } = await http.get('/brands')
         const { data: branches } = await http.get('/branches')
         this.setState({ brands, branches })
     }
 
     render() {
-        if (this.state.brands.length === 0)
-            return Employees.renderNoBrandMsg()
-        else if (this.state.branches.length === 0)
-            return Employees.renderNoBranchMsg()
+        if (this.state.brands === null || this.state.branches === null) return <Loading />
+        
+        if (this.state.brands.length === 0) return Employees.renderNoBrandMsg()
+        else if (this.state.branches.length === 0) return Employees.renderNoBranchMsg()
 
         return (
             <section className='card depth-2'>

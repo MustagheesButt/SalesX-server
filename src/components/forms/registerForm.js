@@ -6,6 +6,7 @@ import Form from '../../components/common/form'
 
 import userService from '../../services/userService'
 import authService from '../../services/authService'
+import Loading from '../common/loading'
 
 class RegisterForm extends Form {
     constructor(props) {
@@ -13,7 +14,8 @@ class RegisterForm extends Form {
 
         this.state = {
             formData: { firstName: '', lastName: '', email: '', password: '' },
-            errors: {}
+            errors: {},
+            awaitingResponse: false
         }
 
         this.schema = Joi.object({
@@ -25,7 +27,10 @@ class RegisterForm extends Form {
     }
 
     async postForm() {
+        if (this.state.awaitingResponse) return
+
         try {
+            this.setState({ awaitingResponse: true })
             const response = await userService.register(this.state.formData)
             authService.loginWithJwt(response.headers['x-auth-token'])
 
@@ -37,9 +42,13 @@ class RegisterForm extends Form {
                 this.setState({ errors })
             }
         }
+
+        this.setState({ awaitingResponse: false })
     }
 
     render() {
+        if (this.state.awaitingResponse) return <Loading type='spinner' />
+
         return (
             <div>
                 <form>

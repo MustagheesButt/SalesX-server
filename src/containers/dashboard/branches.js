@@ -7,10 +7,11 @@ import NewBranchForm from '../../components/forms/newBranchForm'
 import ValueItem from '../../components/common/valueItem'
 import Editable from '../../components/common/editable'
 import XSelect from '../../components/common/xui/xselect'
+import Loading from '../../components/common/loading'
 
 const apiEndpoint = '/branches'
 
-const Branches = (props) => {
+const Branches = () => {
     return (
         <Switch>
             <Route path='/dashboard/branches' exact component={AllBranches} />
@@ -26,14 +27,15 @@ class AllBranches extends React.Component {
         super(props)
 
         this.state = {
-            branches: [],
-            brands: [],
+            brands: null,
+            branches: null,
             selectedBrandId: ''
         }
     }
 
     async populateBranches() {
         try {
+            this.setState({ branches: null })
             let branches = []
             if (this.state.selectedBrandId === '0')
                 branches = (await http.get(apiEndpoint)).data
@@ -60,6 +62,8 @@ class AllBranches extends React.Component {
     }
 
     async componentDidMount() {
+        document.title = `Branches | ${process.env.REACT_APP_NAME}`
+
         await this.populateBrands()
 
         // set selected brand
@@ -89,10 +93,48 @@ class AllBranches extends React.Component {
     }
 
     render() {
-        if (this.state.brands.length === 0)
-            return this.renderNoBrandsMsg()
+        if (this.state.brands === null) return <Loading />
 
-        const branches = this.state.branches.map(branch => {
+        if (this.state.brands.length === 0) return this.renderNoBrandsMsg()
+
+        return (
+            <React.Fragment>
+                <section className='card depth-2'>
+                    <h2>Manage Branches</h2>
+                    <Link to='/dashboard/branches/new-branch'>Create New Branch</Link>
+
+                    {this.renderBrandsSelector()}
+                </section>
+
+                {this.state.branches === null ? <Loading /> :
+                    <section className='card depth-2'>
+                        {this.state.branches.length === 0 ?
+                            <p><em>You have not created any branches yet.</em></p> :
+                            <div>
+                                {this.renderBranches()}
+                            </div>
+                        }
+                    </section>}
+            </React.Fragment>
+        )
+    }
+
+    renderBrandsSelector() {
+        const brandsList = this.state.brands.map(brand => {
+            return (
+                <option key={brand._id} value={brand._id}>{brand.name}</option>
+            )
+        })
+
+        return (
+            <div className='mt-15'>
+                <XSelect label='Select a Brand' name='brand' value={this.state.selectedBrandId} options={brandsList} onChange={this.brandSelectHandler} />
+            </div>
+        )
+    }
+
+    renderBranches() {
+        return this.state.branches?.map(branch => {
             return (
                 <section className='card depth-3' key={branch._id}>
                     <div className='d-flex' style={{ justifyContent: 'space-between' }}>
@@ -108,34 +150,6 @@ class AllBranches extends React.Component {
                 </section>
             )
         })
-
-        const brandsList = this.state.brands.map(brand => {
-            return (
-                <option key={brand._id} value={brand._id}>{brand.name}</option>
-            )
-        })
-
-        return (
-            <React.Fragment>
-                <section className='card depth-2'>
-                    <h2>Manage Branches</h2>
-                    <Link to='/dashboard/branches/new-branch'>Create New Branch</Link>
-                </section>
-
-                {branches.length === 0 ?
-                    <section className='card depth-2'>
-                        <p><em>You have not created any branches yet.</em></p>
-                    </section> :
-                    <section className='card depth-2'>
-                        <XSelect label='Select a Brand' name='brand' value={this.state.selectedBrandId} options={brandsList} onChange={this.brandSelectHandler} />
-
-                        <div>
-                            {branches}
-                        </div>
-                    </section>
-                }
-            </React.Fragment>
-        )
     }
 }
 
@@ -144,33 +158,32 @@ class NewBranch extends React.Component {
         super(props)
 
         this.state = {
-            brands: []
+            brands: null
         }
     }
 
     async componentDidMount() {
+        document.title = `New Branch | ${process.env.REACT_APP_NAME}`
+
         const { data: brands } = await http.get('/brands')
         this.setState({ brands })
     }
 
     render() {
-        if (this.state.brands.length > 0) {
-            return (
-                <section className='card depth-2'>
-                    <h2>Create a New Branch</h2>
-                    <div>
-                        <NewBranchForm brands={this.state.brands} />
-                    </div>
-                </section>
-            )
-        }
+        if (this.state.brands === null)
+            return <Loading />
 
-        return (
+        return this.state.brands.length > 0 ?
             <section className='card depth-2'>
-                <h2>Oops! Looks like you don't have any brands yet.</h2>
+                <h2>Create a New Branch</h2>
+                <div>
+                    <NewBranchForm brands={this.state.brands} />
+                </div>
+            </section> :
+            <section className='card depth-2'>
+                <h2>Looks like you don't have any brands yet.</h2>
                 <p>Create at least one brand first, so you can add that brand's branches.</p>
             </section>
-        )
     }
 }
 
@@ -189,10 +202,13 @@ class BranchDetails extends React.Component {
     async componentDidMount() {
         try {
             const { data: branch } = await http.get(`/branches/${this.branchId}`)
-            const { data: employees } = await http.get(`/branches/${this.branchId}/employees`)
 
+            document.title = `${branch.name} Details | ${process.env.REACT_APP_NAME}`
+
+            const { data: employees } = await http.get(`/branches/${this.branchId}/employees`)
             this.setState({ branch, employees })
         } catch (ex) {
+            document.title = `Branch Not Found | ${process.env.REACT_APP_NAME}`
             console.log(ex)
         }
     }
@@ -202,9 +218,7 @@ class BranchDetails extends React.Component {
             return this.renderBranchDetails()
         else
             return (
-                <section className='card depth-2'>
-                    <p>Loading info...</p>
-                </section>
+                <Loading />
             )
     }
 
@@ -250,7 +264,7 @@ class BranchInventory extends React.Component {
 
         this.state = {
             branch: null,
-            items: []
+            items: null
         }
 
         this.branchId = this.props.match.params.branchId
@@ -262,6 +276,8 @@ class BranchInventory extends React.Component {
             const { data: items } = await http.get(`/items?brand=${branch.brand}`)
 
             this.setState({ branch, items })
+
+            document.title = `${branch.name}'s Inventory | ${process.env.REACT_APP_NAME}`
         } catch (ex) {
             console.log(ex)
         }
@@ -271,11 +287,7 @@ class BranchInventory extends React.Component {
         if (this.state.branch)
             return this.renderBranchInventory()
         else
-            return (
-                <section className='card depth-2'>
-                    <p>Loading info...</p>
-                </section>
-            )
+            return <Loading />
     }
 
     async updateQuantity(item, value) {
@@ -298,16 +310,6 @@ class BranchInventory extends React.Component {
     }
 
     renderBranchInventory() {
-        const inventoryItems = this.state.items.map(item => {
-            const quantity = this.state.branch.inventory.find(x => x.item === item._id)?.quantity
-            return (
-                <tr key={item._id} style={{ lineHeight: '32px' }}>
-                    <td>{item.name}</td>
-                    <td><Editable id={item._id} changeHandler={(itemId, value) => this.updateQuantity(itemId, value)}>{quantity || 0}</Editable></td>
-                </tr>
-            )
-        })
-
         return (
             <section className='card depth-2'>
                 <h3>{this.state.branch.name}'s Inventory</h3>
@@ -320,11 +322,26 @@ class BranchInventory extends React.Component {
                         </tr>
                     </thead>
                     <tbody>
-                        {inventoryItems}
+                        {this.state.items === null ? <Loading /> :
+                            this.state.items.length === 0 ?
+                                <p>Nothing to see here</p> :
+                                this.renderBranchInventoryItems()}
                     </tbody>
                 </table>
             </section>
         )
+    }
+
+    renderBranchInventoryItems() {
+        return this.state.items?.map(item => {
+            const quantity = this.state.branch.inventory.find(x => x.item === item._id)?.quantity
+            return (
+                <tr key={item._id} style={{ lineHeight: '32px' }}>
+                    <td>{item.name}</td>
+                    <td><Editable id={item._id} changeHandler={(itemId, value) => this.updateQuantity(itemId, value)}>{quantity || 0}</Editable></td>
+                </tr>
+            )
+        })
     }
 }
 

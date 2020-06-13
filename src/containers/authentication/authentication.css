@@ -1,9 +1,18 @@
 main#auth {
-    grid-template-rows: 0.1fr 1fr 50px;
     background-image: url('/assets/images/login-bg.jpg');
     background-size: cover;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    height: 100vh;
 }
 
-main#auth > div, main#auth > section.card {
-    grid-column: span 12;
+main#auth > section {
+    width: 80%;
+}
+
+@media (min-width: 600px) {
+    main#auth > section {
+        width: 30%;
+    }
 }

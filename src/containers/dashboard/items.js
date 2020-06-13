@@ -5,11 +5,12 @@ import http from '../../services/httpService'
 
 import XSelect from '../../components/common/xui/xselect'
 import XInput from '../../components/common/xui/xinput'
+import Loading from '../../components/common/loading'
 import NewItemForm from '../../components/forms/newItemForm'
 
 const apiEndpoint = '/items'
 
-const Items = (props) => {
+const Items = () => {
     return (
         <React.Fragment>
             <Route path='/dashboard/items' exact component={AllItems} />
@@ -23,15 +24,16 @@ class AllItems extends React.Component {
         super(props)
 
         this.state = {
-            items: [],
+            items: null,
             itemsFilter: '',
-            brands: [],
+            brands: null,
             selectedBrandId: ''
         }
     }
 
-    // TODO: decide whether to fetch all items of all users' brands, or just one brand's at a time
     async populateItems() {
+        this.setState({ items: null })
+
         try {
             let items = []
             if (this.state.selectedBrandId === '0')
@@ -39,8 +41,7 @@ class AllItems extends React.Component {
             else
                 items = (await http.get(apiEndpoint + `?brand=${this.state.selectedBrandId}`)).data
 
-            const filtered = items // items.filter(item => item.brandId === this.state.selectedBrand._id)
-            this.setState({ items: filtered })
+            this.setState({ items })
         } catch (err) {
             console.log(err)
         }
@@ -60,6 +61,8 @@ class AllItems extends React.Component {
     }
 
     async componentDidMount() {
+        document.title = `Items | ${process.env.REACT_APP_NAME}`
+
         await this.populateBrands()
 
         // set selected brand
@@ -82,15 +85,17 @@ class AllItems extends React.Component {
     renderNoBrandsMsg() {
         return (
             <section className='card depth-2'>
-                <h2>Oops! Looks like you don't have any brands yet.</h2>
+                <h2>Looks like you don't have any brands yet.</h2>
                 <p>Create at least one brand first, so you can add the items/products associated with that particular brand.</p>
             </section>
         )
     }
 
     renderItemsList() {
+        if (this.state.items === null) return <Loading />
+
         const itemsList = this.state.items
-            .filter(item => 
+            .filter(item =>
                 item.name.toLowerCase().includes(this.state.itemsFilter.toLowerCase()) || item.barcode.includes(this.state.itemsFilter)
             ).map(item => {
                 return (
@@ -99,6 +104,40 @@ class AllItems extends React.Component {
                     </tr>
                 )
             })
+
+        return (
+            <section className='card depth-2'>
+                {itemsList.length === 0 ?
+                    <p>Current selection does not have any items.</p> :
+                    <>
+                        <XInput
+                            name='filter'
+                            placeholder='Filter Items'
+                            value={this.state.itemsFilter}
+                            onChange={(e) => this.setState({ itemsFilter: e.target.value })} />
+
+                        <table style={{ width: '100%' }}>
+                            <thead style={{ textAlign: 'left' }}>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Barcode</th>
+                                    <th>Price</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {itemsList}
+                            </tbody>
+                        </table>
+                    </>}
+            </section>
+        )
+    }
+
+    render() {
+        if (this.state.brands === null) return <Loading />
+
+        if (this.state.brands.length === 0) return this.renderNoBrandsMsg()
 
         const brandsList = this.state.brands.map(brand => {
             return (
@@ -111,41 +150,15 @@ class AllItems extends React.Component {
                 <section className='card depth-2'>
                     <h2>Manage Items</h2>
                     <Link to='/dashboard/items/new-item'>Add New Item</Link>
+
+                    <div className='mt-15'>
+                        <XSelect label='Select a Brand' name='brand' value={this.state.selectedBrandId} options={brandsList} onChange={this.brandSelectHandler} />
+                    </div>
                 </section>
 
-                <section className='card depth-2'>
-                    <XSelect label='Select a Brand' name='brand' value={this.state.selectedBrandId} options={brandsList} onChange={this.brandSelectHandler} />
-
-                    <XInput
-                        name='filter'
-                        placeholder='Filter Items'
-                        value={this.state.itemsFilter}
-                        onChange={(e) => this.setState({ itemsFilter: e.target.value })} />
-
-                    <table style={{ width: '100%' }}>
-                        <thead style={{ textAlign: 'left' }}>
-                            <tr>
-                                <th>Name</th>
-                                <th>Barcode</th>
-                                <th>Price</th>
-                                <th>Description</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {itemsList}
-                        </tbody>
-                    </table>
-                </section>
+                {this.renderItemsList()}
             </React.Fragment>
         )
-    }
-
-    render() {
-        if (this.state.brands.length > 0) {
-            return this.renderItemsList()
-        }
-
-        return this.renderNoBrandsMsg()
     }
 }
 
@@ -154,31 +167,35 @@ class NewItem extends React.Component {
         super(props)
 
         this.state = {
-            brands: []
+            brands: null
         }
     }
 
     async componentDidMount() {
+        document.title = `New Item | ${process.env.REACT_APP_NAME}`
+
         const { data: brands } = await http.get('/brands')
         this.setState({ brands })
     }
 
     render() {
-        if (this.state.brands.length > 0) {
+        if (this.state.brands === null) return <Loading />
+
+        if (this.state.brands.length === 0) {
             return (
                 <section className='card depth-2'>
-                    <h2>Add New Items</h2>
-                    <div>
-                        <NewItemForm brands={this.state.brands} />
-                    </div>
+                    <h2>Looks like you don't have any brands yet.</h2>
+                    <p>Create at least one brand first, so you can add the items/products associated with that particular brand.</p>
                 </section>
             )
         }
 
         return (
             <section className='card depth-2'>
-                <h2>Oops! Looks like you don't have any brands yet.</h2>
-                <p>Create at least one brand first, so you can add the items/products associated with that particular brand.</p>
+                <h2>Add New Items</h2>
+                <div>
+                    <NewItemForm brands={this.state.brands} />
+                </div>
             </section>
         )
     }

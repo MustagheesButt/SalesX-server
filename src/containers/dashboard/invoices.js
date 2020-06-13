@@ -5,10 +5,11 @@ import http from '../../services/httpService'
 
 import XSelect from '../../components/common/xui/xselect'
 import XInput from '../../components/common/xui/xinput'
+import Loading from '../../components/common/loading'
 
 const apiEndpoint = '/invoices'
 
-const Invoices = (props) => {
+const Invoices = () => {
     return (
         <React.Fragment>
             <Route path='/dashboard/invoices' exact component={AllInvoices} />
@@ -21,11 +22,11 @@ class AllInvoices extends React.Component {
         super(props)
 
         this.state = {
-            invoices: [],
+            invoices: null,
             invoicesFilter: '',
-            brands: [],
+            brands: null,
             selectedBrand: '',
-            branches: [],
+            branches: null,
             selectedBranch: ''
         }
     }
@@ -40,6 +41,8 @@ class AllInvoices extends React.Component {
     }
 
     async populateBranches() {
+        this.setState({ branches: null })
+
         try {
             const { data: branches } = await http.get(`/branches?brand=${this.state.selectedBrand}`)
 
@@ -51,6 +54,8 @@ class AllInvoices extends React.Component {
     }
 
     async populateInvoices() {
+        this.setState({ invoices: null })
+
         try {
             let invoices = []
             if (this.state.selectedBranch && this.state.selectedBranch !== '0')
@@ -65,6 +70,8 @@ class AllInvoices extends React.Component {
     }
 
     async componentDidMount() {
+        document.title = `Invoices | ${process.env.REACT_APP_NAME}`
+
         await this.populateBrands()
         await this.populateBranches()
 
@@ -85,42 +92,10 @@ class AllInvoices extends React.Component {
     }
 
     render() {
-        if (this.state.brands.length === 0)
-            return this.renderNoBrandsMsg()
-        else if (this.state.branches.length <= 1)
-            return this.renderNoBranchMsg()
+        if (this.state.brands === null || this.state.branches === null) return <Loading />
 
-        return this.renderInvoicesList()
-    }
-
-    renderNoBrandsMsg() {
-        return (
-            <section className='card depth-2'>
-                <h2>Oops! Looks like you don't have any brands yet.</h2>
-                <p>Create at least one brand first, then add some items and branches.</p>
-            </section>
-        )
-    }
-
-    renderNoBranchMsg() {
-        return (
-            <section className='card depth-2'>
-                <h2>Oops! Looks like you don't have any branch(es) yet.</h2>
-                <p>Create at least one branch first, then you can start adding new employees. When one of your employees login to SalesX client and generate an invoice, that invoice data will be displayed here.</p>
-            </section>
-        )
-    }
-
-    renderInvoicesList() {
-        const invoicesList = this.state.invoices
-            .filter(invoice => invoice._id.toLowerCase().includes(this.state.invoicesFilter.toLowerCase()))
-            .map(invoice => {
-                return (
-                    <tr key={invoice._id}>
-                        <td>{invoice._id}</td><td>{invoice.discount}</td><td>{invoice.paymentMethod}</td><td>{new Date(invoice.createdAt).toLocaleString()}</td>
-                    </tr>
-                )
-            })
+        if (this.state.brands.length === 0) return this.renderNoBrandsMsg()
+        else if (this.state.branches.length <= 1) return this.renderNoBranchMsg()
 
         const brandsList = this.state.brands.map(brand => {
             return (
@@ -134,14 +109,15 @@ class AllInvoices extends React.Component {
             )
         })
 
+
         return (
-            <React.Fragment>
+            <>
                 <section className='card depth-2'>
                     <h2>Manage Invoices</h2>
 
                     <div className='d-flex mt-15'>
                         <div className='flex-child'>
-                            <XSelect label='Select a Brand' name='brand' options={brandsList} onChange={this.brandSelectHandler} />
+                            <XSelect label='Select a Brand' name='brand' value={this.state.selectedBrand} options={brandsList} onChange={this.brandSelectHandler} />
                         </div>
                         <div className='flex-child'>
                             <XSelect label='Select a Branch' name='branch' options={branchesList} onChange={this.branchSelectHandler} />
@@ -149,32 +125,68 @@ class AllInvoices extends React.Component {
                     </div>
                 </section>
 
-                <section className='card depth-2'>
-                    {this.state.invoices.length > 0 ?
-                        <div>
-                            <XInput
-                                name='filter'
-                                placeholder='Filter Invoices'
-                                value={this.state.invoicesFilter}
-                                onChange={(e) => this.setState({ invoicesFilter: e.target.value })} />
+                {this.renderInvoicesList()}
+            </>
+        )
+    }
 
-                            <table style={{ width: '100%' }}>
-                                <thead style={{ textAlign: 'left' }}>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Discount</th>
-                                        <th>Payment Method</th>
-                                        <th>Generated At</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {invoicesList}
-                                </tbody>
-                            </table>
-                        </div>
-                        : <em>Current selection does not have any invoices yet.</em>}
-                </section>
-            </React.Fragment>
+    renderNoBrandsMsg() {
+        return (
+            <section className='card depth-2'>
+                <h2>Looks like you don't have any brands yet.</h2>
+                <p>Create at least one brand first, then add some items and branches.</p>
+            </section>
+        )
+    }
+
+    renderNoBranchMsg() {
+        return (
+            <section className='card depth-2'>
+                <h2>Looks like you don't have any branch(es) yet.</h2>
+                <p>Create at least one branch first, then you can start adding new employees. When one of your employees login to SalesX client and generate an invoice, that invoice data will be displayed here.</p>
+            </section>
+        )
+    }
+
+    renderInvoicesList() {
+        if (this.state.invoices === null) return <Loading />
+
+        const invoicesList = this.state.invoices
+            .filter(invoice => invoice._id.toLowerCase().includes(this.state.invoicesFilter.toLowerCase()))
+            .map(invoice => {
+                return (
+                    <tr key={invoice._id}>
+                        <td>{invoice._id}</td><td>{invoice.discount}</td><td>{invoice.paymentMethod}</td><td>{new Date(invoice.createdAt).toLocaleString()}</td>
+                    </tr>
+                )
+            })
+
+        return (
+            <section className='card depth-2'>
+                {this.state.invoices.length > 0 ?
+                    <div>
+                        <XInput
+                            name='filter'
+                            placeholder='Filter Invoices'
+                            value={this.state.invoicesFilter}
+                            onChange={(e) => this.setState({ invoicesFilter: e.target.value })} />
+
+                        <table style={{ width: '100%' }}>
+                            <thead style={{ textAlign: 'left' }}>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Discount</th>
+                                    <th>Payment Method</th>
+                                    <th>Generated At</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {invoicesList}
+                            </tbody>
+                        </table>
+                    </div>
+                    : <em>Current selection does not have any invoices yet.</em>}
+            </section>
         )
     }
 }

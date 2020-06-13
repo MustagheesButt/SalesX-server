@@ -1,9 +1,9 @@
 import React from 'react'
 import Joi from '@hapi/joi'
-import { Link } from 'react-router-dom'
 
 import authService from '../../services/authService'
 
+import Loading from '../common/loading'
 import Form from '../common/form'
 
 class LoginForm extends Form {
@@ -12,7 +12,8 @@ class LoginForm extends Form {
 
         this.state = {
             formData: { email: '', password: '' },
-            errors: {}
+            errors: {},
+            awaitingResponse: false
         }
 
         this.schema = Joi.object({
@@ -22,31 +23,36 @@ class LoginForm extends Form {
     }
 
     async postForm() {
+        if (this.state.awaitingResponse) return
+
         try {
             const { email, password } = this.state.formData
+
+            this.setState({ awaitingResponse: true })
             await authService.login(email, password)
+            
             const { state } = this.props.location
             window.location = state ? state.from.pathname : '/dashboard'
         } catch ({ response }) {
             if (response && response.status === 400) {
                 const errors = { ...this.state.errors }
                 errors.email = response.data
-                this.setState({errors})
+                this.setState({ errors })
             }
         }
+
+        this.setState({ awaitingResponse: false })
     }
 
     render() {
-        return (
-            <div>
-                <form>
-                    {this.renderInput('email', 'Email', 'email')}
-                    {this.renderInput('password', 'Password', 'password')}
-                    {this.renderButton('Login')}
-                </form>
+        if (this.state.awaitingResponse) return <Loading type='spinner' />
 
-                <div>Don't have an account? <Link to='/register'>Register</Link> now.</div>
-            </div>
+        return (
+            <form className='mb-15'>
+                {this.renderInput('email', 'Email', 'email')}
+                {this.renderInput('password', 'Password', 'password')}
+                {this.renderButton('Login')}
+            </form>
         )
     }
 }

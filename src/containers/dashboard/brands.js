@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Route, Link, Switch } from 'react-router-dom'
 
 import http from '../../services/httpService'
@@ -6,10 +6,11 @@ import http from '../../services/httpService'
 import NewBrandForm from '../../components/forms/newBrandForm'
 import ValueItem from '../../components/common/valueItem'
 import Editable from '../../components/common/editable'
+import Loading from '../../components/common/loading'
 
 const apiEndpoint = '/brands'
 
-const Brands = (props) => {
+const Brands = () => {
     return (
         <React.Fragment>
             <Switch>
@@ -26,8 +27,14 @@ class AllBrands extends React.Component {
         super(props)
 
         this.state = {
-            brands: []
+            brands: null
         }
+    }
+
+    async componentDidMount() {
+        document.title = `Brands | ${process.env.REACT_APP_NAME}`
+
+        this.populateBrands()
     }
 
     async populateBrands() {
@@ -40,12 +47,24 @@ class AllBrands extends React.Component {
         }
     }
 
-    async componentDidMount() {
-        this.populateBrands()
+    render() {
+        return (
+            <section className='card depth-2'>
+                <h2>Manage Brands</h2>
+
+                <Link to='/dashboard/brands/new-brand'>Create New Brand</Link>
+
+                <div>
+                    {this.state.brands === null ? <Loading /> :
+                        this.state.brands.length > 0 ? this.renderBrandsList() :
+                            <p>Nothing to see here :(</p>}
+                </div>
+            </section>
+        )
     }
 
-    render() {
-        const brandsList = this.state.brands.map(brand => {
+    renderBrandsList() {
+        return this.state.brands?.map(brand => {
             return (
                 <section className='card depth-3' key={brand._id}>
                     <div className='d-flex' style={{ justifyContent: 'space-between' }}>
@@ -64,22 +83,14 @@ class AllBrands extends React.Component {
                 </section>
             )
         })
-
-        return (
-            <section className='card depth-2'>
-                <h2>Manage Brands</h2>
-
-                <Link to='/dashboard/brands/new-brand'>Create New Brand</Link>
-
-                <div>
-                    {brandsList}
-                </div>
-            </section>
-        )
     }
 }
 
-const NewBrand = (props) => {
+const NewBrand = () => {
+    useEffect(() => {
+        document.title = `New Brand | ${process.env.REACT_APP_NAME}`
+    })
+
     return (
         <section className='card depth-2'>
             <h2>Create a New Brand</h2>
@@ -105,7 +116,10 @@ class BrandDetails extends React.Component {
         try {
             const { data: brand } = await http.get(`/brands/${this.brandId}`)
             this.setState({ brand })
+
+            document.title = `${brand.name} | ${process.env.REACT_APP_NAME}`
         } catch (ex) {
+            document.title = `Brand Not Found | ${process.env.REACT_APP_NAME}`
             console.log(ex)
         }
     }
@@ -115,9 +129,7 @@ class BrandDetails extends React.Component {
             return this.renderBrandDetails()
         else
             return (
-                <section className='card depth-2'>
-                    <p>Loading info...</p>
-                </section>
+                <Loading />
             )
     }
 

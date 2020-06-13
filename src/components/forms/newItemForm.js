@@ -5,6 +5,7 @@ import http from '../../services/httpService'
 import notificationService from '../../services/notificationService'
 
 import Form from '../common/form'
+import Loading from '../common/loading'
 
 const apiEndpoint = '/items'
 
@@ -14,7 +15,8 @@ class NewItemForm extends Form {
 
         this.state = {
             formData: { name: '', barcode: '', price: '', description: '', brand: '' },
-            errors: {}
+            errors: {},
+            awaitingResponse: false
         }
 
         this.schema = Joi.object({
@@ -34,18 +36,25 @@ class NewItemForm extends Form {
     }
 
     async postForm() {
+        if (this.state.awaitingResponse) return
+
         try {
+            this.setState({ awaitingResponse: true })
             const { data } = await http.post(apiEndpoint, this.state.formData)
             notificationService.alertSuccess(`Created new item ${data.name}`)
         } catch ({ response }) {
             notificationService.alertDanger(`Something went wrong! ${response.data}`)
         }
+
+        this.setState({ awaitingResponse: false })
     }
 
     render() {
         const brands = this.props.brands.map(brand => {
             return { text: brand.name, value: brand._id }
         })
+
+        if (this.state.awaitingResponse) return <Loading type='spinner' />
 
         return (
             <div>

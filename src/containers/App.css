@@ -112,7 +112,6 @@ main.grid-container {
 .form-group {
     display: flex;
     flex-direction: column;
-    margin-bottom: 20px;
 }
 
 .form-group>label {
@@ -136,4 +135,8 @@ main.grid-container {
 
 .mt-15 {
     margin-top: 15px;
+}
+
+.mb-15 {
+    margin-bottom: 15px;
 }

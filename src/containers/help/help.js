@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Route, Link, NavLink } from 'react-router-dom'
 
-const Help = (props) => {
+const Help = () => {
     return (
         <main className='depth-1 grid-container' id='help'>
             <aside className='depth-2'>
@@ -21,7 +21,11 @@ const Help = (props) => {
     )
 }
 
-const Guide = (props) => {
+const Guide = () => {
+    useEffect(() => {
+        document.title = `Guide | ${process.env.REACT_APP_NAME}`
+    })
+
     return (
         <section className='card depth-2'>
             <h1>Guide</h1>
@@ -51,7 +55,11 @@ const Guide = (props) => {
     )
 }
 
-const FAQ = (props) => {
+const FAQ = () => {
+    useEffect(() => {
+        document.title = `FAQ | ${process.env.REACT_APP_NAME}`
+    })
+
     return (
         <section className='card depth-2'>
             <h1>FAQ</h1>
@@ -59,7 +67,11 @@ const FAQ = (props) => {
     )
 }
 
-const CustomerSupport = (props) => {
+const CustomerSupport = () => {
+    useEffect(() => {
+        document.title = `Customer Support | ${process.env.REACT_APP_NAME}`
+    })
+
     return (
         <section className='card depth-2'>
             <h1>Customer Support</h1>

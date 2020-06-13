@@ -5,6 +5,7 @@ import http from '../../services/httpService'
 import notificationService from '../../services/notificationService'
 
 import Form from '../../components/common/form'
+import Loading from '../common/loading'
 
 const apiEndpoint = '/employees'
 
@@ -14,7 +15,8 @@ class NewEmployeeForm extends Form {
 
         this.state = {
             formData: { firstName: '', lastName: '', email: '', phoneNumber: '', password: '', title: '', salary: '', brand: '', branch: '' },
-            errors: {}
+            errors: {},
+            awaitingResponse: false
         }
 
         this.schema = Joi.object({
@@ -39,7 +41,10 @@ class NewEmployeeForm extends Form {
     }
 
     async postForm() {
+        if (this.state.awaitingResponse) return
+
         try {
+            this.setState({ awaitingResponse: true })
             const { data: employee } = await http.post(apiEndpoint, this.state.formData)
             notificationService.alertSuccess(`Employee "${employee.firstName} ${employee.lastName}" added!`)
         } catch ({ response }) {
@@ -48,6 +53,8 @@ class NewEmployeeForm extends Form {
                 this.setState({ errors })
             }
         }
+
+        this.setState({ awaitingResponse: false })
     }
 
     render() {
@@ -58,6 +65,8 @@ class NewEmployeeForm extends Form {
         const branches = this.props.branches.map(branch => {
             return { text: branch.name, value: branch._id }
         })
+
+        if (this.state.awaitingResponse) return <Loading type='spinner' />
 
         return (
             <div>
