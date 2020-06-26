@@ -37,13 +37,12 @@ class NewBranchForm extends Form {
 
             notificationService.alertSuccess(`Branch "${data.name}" created!`)
         } catch ({ response }) {
-            if (response.errors && response.statusCode === 400) {
-                const errors = response.errors
+            if (response && response.status === 400) {
+                const errors = { ...this.state.errors }
+                response.data.forEach(error => {
+                    errors[error.context.key] = error.message
+                })
                 this.setState({ errors })
-            }
-
-            if (response.data && response.statusCode === 400) {
-                notificationService.alertDanger(`Something went wrong. ${response.data}.`)
             }
         }
 

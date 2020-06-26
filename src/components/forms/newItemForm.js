@@ -22,7 +22,7 @@ class NewItemForm extends Form {
         this.schema = Joi.object({
             name: Joi.string().required().label('Item Name'),
             barcode: Joi.string().label('Barcode'),
-            price: Joi.number().required().label('Price'),
+            price: Joi.number().min(0).required().label('Price'),
             description: Joi.string().label('Description'),
             brand: Joi.string().required()
         })
@@ -43,7 +43,13 @@ class NewItemForm extends Form {
             const { data } = await http.post(apiEndpoint, this.state.formData)
             notificationService.alertSuccess(`Created new item ${data.name}`)
         } catch ({ response }) {
-            notificationService.alertDanger(`Something went wrong! ${response.data}`)
+            if (response.data && response.status === 400) {
+                const errors = { ...this.state.errors }
+                response.data.forEach(error => {
+                    errors[error.context.key] = error.message
+                })
+                this.setState({ errors })
+            }
         }
 
         this.setState({ awaitingResponse: false })

@@ -1,14 +1,7 @@
 import jwtDecode from 'jwt-decode'
 import http from './httpService'
 
-const apiEndpoint = '/auth'
-
 http.setJwt(getJwt())
-
-async function login(email, password) {
-    const { data: jwt } = await http.post(apiEndpoint, { email, password })
-    localStorage.setItem('jwt', jwt)
-}
 
 function loginWithJwt(jwt) {
     localStorage.setItem('jwt', jwt)
@@ -32,7 +25,6 @@ function getJwt() {
 }
 
 export default {
-    login,
     loginWithJwt,
     logout,
     getCurrentUser,

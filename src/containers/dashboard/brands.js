@@ -57,7 +57,7 @@ class AllBrands extends React.Component {
                 <div>
                     {this.state.brands === null ? <Loading /> :
                         this.state.brands.length > 0 ? this.renderBrandsList() :
-                            <p>Nothing to see here :(</p>}
+                            <p>No brands to display. Create one to get started.</p>}
                 </div>
             </section>
         )

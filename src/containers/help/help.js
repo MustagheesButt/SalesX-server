@@ -1,23 +1,27 @@
 import React, { useEffect } from 'react'
 import { Route, Link, NavLink } from 'react-router-dom'
 
+import Main from '../../components/templates/main'
+
 const Help = () => {
     return (
-        <main className='depth-1 grid-container' id='help'>
-            <aside className='depth-2'>
-                <ul>
-                    <li><NavLink to='/help' exact>Guide</NavLink></li>
-                    <li><NavLink to='/help/faq'>FAQ</NavLink></li>
-                    <li><NavLink to='/help/customer-support'>Contact Support</NavLink></li>
-                </ul>
-            </aside>
+        <Main>
+            <main className='depth-1 grid-container' id='help'>
+                <aside className='depth-2'>
+                    <ul>
+                        <li><NavLink to='/help' exact>Guide</NavLink></li>
+                        <li><NavLink to='/help/faq'>FAQ</NavLink></li>
+                        <li><NavLink to='/help/customer-support'>Contact Support</NavLink></li>
+                    </ul>
+                </aside>
 
-            <div id='main'>
-                <Route path='/help' exact component={Guide} />
-                <Route path='/help/faq' component={FAQ} />
-                <Route path='/help/customer-support' component={CustomerSupport} />
-            </div>
-        </main>
+                <div id='main'>
+                    <Route path='/help' exact component={Guide} />
+                    <Route path='/help/faq' component={FAQ} />
+                    <Route path='/help/customer-support' component={CustomerSupport} />
+                </div>
+            </main>
+        </Main>
     )
 }
 

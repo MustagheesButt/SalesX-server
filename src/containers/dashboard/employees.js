@@ -56,7 +56,7 @@ class AllEmployees extends React.Component {
     async populateBrands() {
         try {
             const { data: brands } = await http.get('/brands')
-            this.setState({ brands, selectedBrand: brands[0]._id || '' })
+            this.setState({ brands, selectedBrand: brands[0]?._id || '' })
         } catch ({ response }) {
             console.error(response.data)
         }
@@ -113,6 +113,12 @@ class AllEmployees extends React.Component {
 
     renderEmployeesList() {
         if (this.state.employees === null) return <Loading />
+        else if (this.state.employees.length === 0)
+            return (
+                <section className='card depth-2'>
+                    <em>Current selection does not have any employees yet.</em>
+                </section>
+            )
 
         const employeesList = this.state.employees
             .filter(employee =>
@@ -129,30 +135,28 @@ class AllEmployees extends React.Component {
 
         return (
             <section className='card depth-2'>
-                {employeesList.length > 0 ?
-                    <div>
-                        <XInput
-                            name='filter'
-                            placeholder='Filter Employees'
-                            value={this.state.employeesFilter}
-                            onChange={(e) => this.setState({ employeesFilter: e.target.value })} />
+                <XInput
+                    name='filter'
+                    placeholder='Filter Employees'
+                    value={this.state.employeesFilter}
+                    onChange={(e) => this.setState({ employeesFilter: e.target.value })} />
 
-                        <table style={{ width: '100%' }}>
-                            <thead style={{ textAlign: 'left' }}>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Phone Number</th>
-                                    <th>Title</th>
-                                    <th>Salary</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {employeesList}
-                            </tbody>
-                        </table>
-                    </div>
-                    : <em>Current selection does not have any employees yet.</em>}
+                {employeesList.length === 0 ?
+                    <p>Your search did not yeild any results.</p> :
+                    <table style={{ width: '100%' }}>
+                        <thead style={{ textAlign: 'left' }}>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone Number</th>
+                                <th>Title</th>
+                                <th>Salary</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {employeesList}
+                        </tbody>
+                    </table>}
             </section>
         )
     }
@@ -217,7 +221,7 @@ class NewEmployee extends React.Component {
 
     render() {
         if (this.state.brands === null || this.state.branches === null) return <Loading />
-        
+
         if (this.state.brands.length === 0) return Employees.renderNoBrandMsg()
         else if (this.state.branches.length === 0) return Employees.renderNoBranchMsg()
 

@@ -5,6 +5,7 @@ import Chart from 'chart.js'
 import http from '../../services/httpService'
 import notificationService from '../../services/notificationService'
 
+import Main from '../../components/templates/main'
 import Loading from '../../components/common/loading'
 
 import Items from './items'
@@ -18,28 +19,30 @@ import './dashboard.css'
 
 const Dashboard = () => {
     return (
-        <main className='depth-1 grid-container' id='dashboard'>
-            <aside className='depth-2'>
-                <ul>
-                    <li><NavLink to='/dashboard' exact>Dashboard</NavLink></li>
-                    <li><NavLink to='/dashboard/brands'>Brands</NavLink></li>
-                    <li><NavLink to='/dashboard/branches'>Branches</NavLink></li>
-                    <li><NavLink to='/dashboard/items'>Items</NavLink></li>
-                    <li><NavLink to='/dashboard/employees'>Employees</NavLink></li>
-                    <li><NavLink to='/dashboard/invoices'>Invoices</NavLink></li>
-                    <li><NavLink to='/dashboard/statistics'>Statistics</NavLink></li>
-                </ul>
-            </aside>
-            <div id='main'>
-                <Route path='/dashboard' component={DashboardHome} exact />
-                <Route path='/dashboard/brands' component={Brands} />
-                <Route path='/dashboard/branches' component={Branches} />
-                <Route path='/dashboard/items' component={Items} />
-                <Route path='/dashboard/employees' component={Employees} />
-                <Route path='/dashboard/invoices' component={Invoices} />
-                <Route path='/dashboard/statistics' component={Statistics} />
-            </div>
-        </main>
+        <Main>
+            <main className='depth-1 grid-container' id='dashboard'>
+                <aside className='depth-2'>
+                    <ul>
+                        <li><NavLink to='/dashboard' exact>Dashboard</NavLink></li>
+                        <li><NavLink to='/dashboard/brands'>Brands</NavLink></li>
+                        <li><NavLink to='/dashboard/branches'>Branches</NavLink></li>
+                        <li><NavLink to='/dashboard/items'>Items</NavLink></li>
+                        <li><NavLink to='/dashboard/employees'>Employees</NavLink></li>
+                        <li><NavLink to='/dashboard/invoices'>Invoices</NavLink></li>
+                        <li><NavLink to='/dashboard/statistics'>Statistics</NavLink></li>
+                    </ul>
+                </aside>
+                <div id='main'>
+                    <Route path='/dashboard' component={DashboardHome} exact />
+                    <Route path='/dashboard/brands' component={Brands} />
+                    <Route path='/dashboard/branches' component={Branches} />
+                    <Route path='/dashboard/items' component={Items} />
+                    <Route path='/dashboard/employees' component={Employees} />
+                    <Route path='/dashboard/invoices' component={Invoices} />
+                    <Route path='/dashboard/statistics' component={Statistics} />
+                </div>
+            </main>
+        </Main>
     )
 }
 
@@ -61,13 +64,13 @@ class DashboardHome extends React.Component {
 
         try {
             const { data: brands } = await http.get('/brands')
-            if (brands.length === 0) return
+            if (brands.length === 0) return this.setState({ brands })
 
             const { data: branches } = await http.get('/branches')
-            if (branches.length === 0) return this.setState({ brands })
+            if (branches.length === 0) return this.setState({ brands, branches })
 
             const { data: employees } = await http.get('/employees')
-            if (employees.length === 0) return this.setState({ brands, branches })
+            if (employees.length === 0) return this.setState({ brands, branches, employees })
 
             const { data: invoices } = await http.get('/invoices/latest')
 
@@ -135,14 +138,14 @@ class DashboardHome extends React.Component {
     }
 
     render() {
-        if (this.state.brands === null || this.state.branches === null || this.state.employees === null)
-            return <Loading />
-        if (this.state.brands.length === 0)
-            return this.renderNewComerGuide()
-        if (this.state.branches.length === 0)
-            return this.renderNewComerGuide('branch')
-        if (this.state.employees.length === 0)
-            return this.renderNewComerGuide('employee')
+        if (this.state.brands === null) return <Loading />
+        else if (this.state.brands.length === 0) return this.renderNewComerGuide()
+
+        if (this.state.branches === null) return <Loading />
+        else if (this.state.branches.length === 0) return this.renderNewComerGuide('branch')
+
+        if (this.state.employees === null) return <Loading />
+        else if (this.state.employees.length === 0) return this.renderNewComerGuide('employee')
 
         const invoices = this.state.invoices.map(invoice => {
             return (
