@@ -34,7 +34,7 @@ class AllInvoices extends React.Component {
     async populateBrands() {
         try {
             const { data: brands } = await http.get('/brands')
-            this.setState({ brands, selectedBrand: brands[0]._id || '' })
+            this.setState({ brands, selectedBrand: brands[0]?._id || '' })
         } catch ({ response }) {
             console.error(response.data)
         }
@@ -142,8 +142,8 @@ class AllInvoices extends React.Component {
     renderNoBranchMsg() {
         return (
             <section className='card depth-2'>
-                <h2>Looks like you don't have any branch(es) yet.</h2>
-                <p>Create at least one branch first, then you can start adding new employees. When one of your employees login to SalesX client and generate an invoice, that invoice data will be displayed here.</p>
+                <h2>Looks like you don't have any branches yet.</h2>
+                <p>Create at least one branch first, then you can start adding new employees. When one of your employees logs in to SalesX client and generates an invoice, that invoice data will be displayed here.</p>
             </section>
         )
     }

@@ -19,6 +19,15 @@ const Items = () => {
     )
 }
 
+function renderNoBrandsMsg() {
+    return (
+        <section className='card depth-2'>
+            <h2>Looks like you don't have any brands yet.</h2>
+            <p>Create at least one brand first, so you can add the items/products associated with that particular brand.</p>
+        </section>
+    )
+}
+
 class AllItems extends React.Component {
     constructor(props) {
         super(props)
@@ -51,10 +60,8 @@ class AllItems extends React.Component {
         try {
             const { data: brands } = await http.get('/brands')
 
-            if (brands.length > 0) {
-                brands.unshift({ _id: '0', name: 'All' })
-                this.setState({ brands })
-            }
+            brands.unshift({ _id: '0', name: 'All' })
+            this.setState({ brands })
         } catch ({ response }) {
             console.log(response.data)
         }
@@ -82,17 +89,14 @@ class AllItems extends React.Component {
         this.setState({ selectedBrandId: selectedBrand._id }, this.populateItems)
     }
 
-    renderNoBrandsMsg() {
-        return (
-            <section className='card depth-2'>
-                <h2>Looks like you don't have any brands yet.</h2>
-                <p>Create at least one brand first, so you can add the items/products associated with that particular brand.</p>
-            </section>
-        )
-    }
-
     renderItemsList() {
         if (this.state.items === null) return <Loading />
+        else if (this.state.items.length === 0)
+            return (
+                <section className='card depth-2'>
+                    <em>Current selection does not have any items.</em>
+                </section>
+            )
 
         const itemsList = this.state.items
             .filter(item =>
@@ -107,29 +111,27 @@ class AllItems extends React.Component {
 
         return (
             <section className='card depth-2'>
-                {itemsList.length === 0 ?
-                    <p>Current selection does not have any items.</p> :
-                    <>
-                        <XInput
-                            name='filter'
-                            placeholder='Filter Items'
-                            value={this.state.itemsFilter}
-                            onChange={(e) => this.setState({ itemsFilter: e.target.value })} />
+                <XInput
+                    name='filter'
+                    placeholder='Filter Items'
+                    value={this.state.itemsFilter}
+                    onChange={(e) => this.setState({ itemsFilter: e.target.value })} />
 
-                        <table style={{ width: '100%' }}>
-                            <thead style={{ textAlign: 'left' }}>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Barcode</th>
-                                    <th>Price</th>
-                                    <th>Description</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {itemsList}
-                            </tbody>
-                        </table>
-                    </>}
+                {itemsList.length === 0 ?
+                    <p>Your search did not yeild any results.</p> :
+                    <table style={{ width: '100%' }}>
+                        <thead style={{ textAlign: 'left' }}>
+                            <tr>
+                                <th>Name</th>
+                                <th>Barcode</th>
+                                <th>Price</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {itemsList}
+                        </tbody>
+                    </table>}
             </section>
         )
     }
@@ -137,7 +139,7 @@ class AllItems extends React.Component {
     render() {
         if (this.state.brands === null) return <Loading />
 
-        if (this.state.brands.length === 0) return this.renderNoBrandsMsg()
+        if (this.state.brands.length <= 1) return renderNoBrandsMsg()
 
         const brandsList = this.state.brands.map(brand => {
             return (
@@ -181,14 +183,7 @@ class NewItem extends React.Component {
     render() {
         if (this.state.brands === null) return <Loading />
 
-        if (this.state.brands.length === 0) {
-            return (
-                <section className='card depth-2'>
-                    <h2>Looks like you don't have any brands yet.</h2>
-                    <p>Create at least one brand first, so you can add the items/products associated with that particular brand.</p>
-                </section>
-            )
-        }
+        if (this.state.brands.length === 0) return renderNoBrandsMsg()
 
         return (
             <section className='card depth-2'>

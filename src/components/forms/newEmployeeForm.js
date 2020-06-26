@@ -26,7 +26,7 @@ class NewEmployeeForm extends Form {
             phoneNumber: Joi.string().when('email', {not: '', then: Joi.string().allow('')}).label('Phone Number'),
             password: Joi.string().min(8).required().label('Password'),
             title: Joi.string().label('Job Title').allow(''),
-            salary: Joi.number().label('Salary').allow(''),
+            salary: Joi.number().min(0).label('Salary').allow(''),
             brand: Joi.string().required(),
             branch: Joi.string().required()
         })
@@ -48,13 +48,16 @@ class NewEmployeeForm extends Form {
             const { data: employee } = await http.post(apiEndpoint, this.state.formData)
             notificationService.alertSuccess(`Employee "${employee.firstName} ${employee.lastName}" added!`)
         } catch ({ response }) {
-            if (response.errors && response.statusCode === 400) {
-                const errors = response.errors
+            if (response.data && response.status === 400) {
+                const errors = { ...this.state.errors }
+                response.data.forEach(error => {
+                    errors[error.context.key] = error.message
+                })
                 this.setState({ errors })
             }
         }
 
-        this.setState({ awaitingResponse: false })
+        this.setState({ awaitingResponse: false }, () => {console.log(this.state.errors)})
     }
 
     render() {

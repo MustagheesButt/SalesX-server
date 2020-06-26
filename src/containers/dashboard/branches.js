@@ -52,10 +52,8 @@ class AllBranches extends React.Component {
         try {
             const { data: brands } = await http.get('/brands')
 
-            if (brands.length > 0) {
-                brands.unshift({ _id: '0', name: 'All' })
-                this.setState({ brands })
-            }
+            brands.unshift({ _id: '0', name: 'All' })
+            this.setState({ brands })
         } catch ({ response }) {
             console.log(response.data)
         }
@@ -95,7 +93,7 @@ class AllBranches extends React.Component {
     render() {
         if (this.state.brands === null) return <Loading />
 
-        if (this.state.brands.length === 0) return this.renderNoBrandsMsg()
+        if (this.state.brands.length <= 1) return this.renderNoBrandsMsg()
 
         return (
             <React.Fragment>
@@ -235,7 +233,7 @@ class BranchDetails extends React.Component {
 
         return (
             <section className='card depth-2'>
-                <h1>Details for {this.state.branch.address}</h1>
+                <h1>Details for {this.state.branch.name} Branch</h1>
 
                 <section className='card depth-3'>
                     <h3>Employees</h3>
